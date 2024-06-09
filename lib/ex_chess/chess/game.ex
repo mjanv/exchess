@@ -1,7 +1,7 @@
 defmodule ExChess.Chess.Game do
   @moduledoc false
 
-  alias ExChess.{Board, Clock, Move}
+  alias ExChess.Chess.{Board, Clock, Move}
 
   @type t() :: %__MODULE__{
           id: String.t(),

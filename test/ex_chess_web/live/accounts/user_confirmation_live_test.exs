@@ -1,4 +1,4 @@
-defmodule ExChessWeb.UserConfirmationLiveTest do
+defmodule ExChessWeb.Live.Accounts.UserConfirmationLiveTest do
   use ExChessWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest

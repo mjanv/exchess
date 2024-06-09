@@ -15,14 +15,10 @@ defmodule ExChess.Games.GameSupervisor do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
-  def start(%Game{id: id} = game) do
+  def start(%Game{id: id}) do
     case DynamicSupervisor.start_child(__MODULE__, {GameServer, [id: id]}) do
-      {:ok, _pid} ->
-        GameServer.cast(game, :start)
-        :ok
-
-      {:error, {:already_started, _pid}} ->
-        :ok
+      {:ok, _pid} -> :ok
+      {:error, {:already_started, _pid}} -> :error
     end
   end
 

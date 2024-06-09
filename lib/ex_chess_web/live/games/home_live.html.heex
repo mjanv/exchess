@@ -1,13 +1,35 @@
-<h1>Home</h1>
+<%= inspect(@analytics) %>
 
-<h2>Active games (<%= length(@games) %>)</h2>
+<.header>
+  Active games (<%= length(@games) %>)
+  <:actions>
+    <.link patch={~p"/game/new"}><.button>New Game</.button></.link>
+  </:actions>
+</.header>
 
-<%= for game <- @games do %>
-  <.live_component module={GameComponent} id={"game-" <> game.id} game={game} />
-<% end %>
+<.table id="games" rows={@games}>
+  <:col :let={game} label="id"><%= game.id %></:col>
+  <:action :let={game}>
+    <.link  href={~p"/game/#{game}"}>See game</.link>
+  </:action>
+</.table>
+
+<.header>
+  Past games (<%= length(@past_games) %>)
+</.header>
+
+<.table id="games" rows={@past_games}>
+  <:col :let={game} label="id"><%= game.id %></:col>
+  <:col :let={game} label="result"><%= game.result %></:col>
+</.table>
 
 
-
-<br \>
-
-<.button phx-click="create_game">Create game</.button>
+<.modal :if={@live_action in [:new]} id="game-modal" show on_cancel={JS.patch(~p"/home")}>
+  <.live_component
+    module={ExChessWeb.Live.Games.Components.NewGame}
+    id={:new}
+    action={@live_action}
+    game={@game}
+    patch={~p"/home"}
+  />
+</.modal>

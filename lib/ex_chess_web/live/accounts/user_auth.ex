@@ -1,4 +1,6 @@
 defmodule ExChessWeb.Live.Accounts.UserAuth do
+  @moduledoc false
+
   use ExChessWeb, :verified_routes
 
   import Plug.Conn

@@ -1,4 +1,4 @@
-defmodule ExChessWeb.UserSettingsLiveTest do
+defmodule ExChessWeb.Live.Accounts.UserSettingsLiveTest do
   use ExChessWeb.ConnCase, async: true
 
   alias ExChess.Accounts

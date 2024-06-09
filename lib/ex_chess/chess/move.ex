@@ -79,9 +79,10 @@ defmodule ExChess.Chess.Move do
     vectors
     |> Enum.map(&Position.vec(start, &1))
     |> Enum.reduce_while([], fn p, moves ->
-      cond do
-        Position.valid?(p) -> {:cont, moves ++ [p]}
-        true -> {:halt, moves}
+      if Position.valid?(p) do
+        {:cont, moves ++ [p]}
+      else
+        {:halt, moves}
       end
     end)
   end

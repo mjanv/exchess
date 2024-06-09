@@ -6,16 +6,17 @@ defmodule ExChess.Chess.Notations.Pgn do
   """
 
   def history(pgn) do
-    IO.inspect(pgn)
     [tags, moves] = String.split(pgn, "\n\n", parts: 2)
 
-    tags
-    |> String.split("\n")
-    |> Enum.map(&parse_tag/1)
-    |> Enum.reject(&is_nil/1)
-    |> Enum.into(%{})
+    a =
+      tags
+      |> String.split("\n")
+      |> Enum.map(&parse_tag/1)
+      |> Enum.reject(&is_nil/1)
+      |> Enum.into(%{})
 
-    moves |> parse_moves()
+    b = moves |> parse_moves()
+    {a, b}
   end
 
   defp parse_tag(line) do

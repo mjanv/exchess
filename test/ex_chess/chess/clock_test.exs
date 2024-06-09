@@ -31,7 +31,7 @@ defmodule ExChess.Chess.ClockTest do
       |> Clock.tick()
       |> Clock.tick()
 
-    %Clock{status: :expired, turn: :white, remaining: %{black: 5_000, white: 0}} =
+    %Clock{status: :stopped, turn: :white, remaining: %{black: 5_000, white: 0}} =
       clock
 
     assert true
@@ -49,7 +49,7 @@ defmodule ExChess.Chess.ClockTest do
       |> Clock.tick()
       |> Clock.tick()
 
-    %Clock{status: :expired, turn: :black, remaining: %{black: 0, white: 5_000}} =
+    %Clock{status: :stopped, turn: :black, remaining: %{black: 0, white: 5_000}} =
       clock
 
     assert true

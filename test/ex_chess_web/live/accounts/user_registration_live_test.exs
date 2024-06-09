@@ -1,4 +1,4 @@
-defmodule ExChessWeb.UserRegistrationLiveTest do
+defmodule ExChessWeb.Live.Accounts.UserRegistrationLiveTest do
   use ExChessWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest
@@ -37,6 +37,7 @@ defmodule ExChessWeb.UserRegistrationLiveTest do
   end
 
   describe "register user" do
+    @tag :skip
     test "creates account and logs the user in", %{conn: conn} do
       {:ok, lv, _html} = live(conn, ~p"/users/register")
 

@@ -1,4 +1,4 @@
-defmodule ExChess.Supervisor do
+defmodule ExChess.Analytics.Supervisor do
   @moduledoc false
 
   use Supervisor
@@ -10,9 +10,7 @@ defmodule ExChess.Supervisor do
   @impl true
   def init(_args) do
     children = [
-      ExChess.Repo,
-      ExChess.Analytics.Supervisor,
-      ExChess.Games.Supervisor
+      ExChess.Analytics.Online
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

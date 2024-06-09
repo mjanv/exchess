@@ -1,4 +1,4 @@
-defmodule ExChessWeb.UserForgotPasswordLiveTest do
+defmodule ExChessWeb.Live.Accounts.UserForgotPasswordLiveTest do
   use ExChessWeb.ConnCase, async: true
 
   import Phoenix.LiveViewTest

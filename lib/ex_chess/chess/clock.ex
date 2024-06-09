@@ -3,7 +3,7 @@ defmodule ExChess.Chess.Clock do
 
   @type t() :: %__MODULE__{
           timer: any(),
-          status: :created | :started | :stopped | :expired,
+          status: :created | :started | :stopped,
           turn: :white | :black,
           interval: integer(),
           remaining: %{white: integer(), black: integer()}
@@ -42,13 +42,20 @@ defmodule ExChess.Chess.Clock do
   end
 
   def tick(
-        %__MODULE__{status: :started, interval: interval, turn: turn, remaining: remaining} =
+        %__MODULE__{
+          status: :started,
+          timer: timer,
+          interval: interval,
+          turn: turn,
+          remaining: remaining
+        } =
           clock
       ) do
     clock = %{clock | remaining: Map.update(remaining, turn, 0, fn x -> max(0, x - interval) end)}
 
     if min(clock.remaining.white, clock.remaining.black) == 0 do
-      %{clock | status: :expired}
+      :timer.cancel(timer)
+      %{clock | timer: nil, status: :stopped}
     else
       clock
     end

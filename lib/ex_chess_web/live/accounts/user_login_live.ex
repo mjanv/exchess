@@ -1,4 +1,4 @@
-defmodule ExChessWeb.Accounts.UserLoginLive do
+defmodule ExChessWeb.Live.Accounts.UserLoginLive do
   use ExChessWeb, :live_view
 
   def render(assigns) do

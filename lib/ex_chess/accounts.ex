@@ -6,7 +6,7 @@ defmodule ExChess.Accounts do
   import Ecto.Query, warn: false
   alias ExChess.Repo
 
-  alias ExChess.Accounts.{User, UserToken, UserNotifier}
+  alias ExChess.Accounts.{User, UserNotifier, UserToken}
 
   ## Database getters
 

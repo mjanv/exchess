@@ -22,10 +22,10 @@ defmodule ExChessWeb.Router do
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{ExChessWeb.Live.Accounts.UserAuth, :redirect_if_user_is_authenticated}] do
-      live("/users/register", Accounts.UserRegistrationLive, :new)
-      live("/users/log_in", Accounts.UserLoginLive, :new)
-      live("/users/reset_password", Accounts.UserForgotPasswordLive, :new)
-      live("/users/reset_password/:token", Accounts.UserResetPasswordLive, :edit)
+      live("/users/register", Live.Accounts.UserRegistrationLive, :new)
+      live("/users/log_in", Live.Accounts.UserLoginLive, :new)
+      live("/users/reset_password", Live.Accounts.UserForgotPasswordLive, :new)
+      live("/users/reset_password/:token", Live.Accounts.UserResetPasswordLive, :edit)
     end
 
     get("/", PageController, :home)
@@ -37,11 +37,12 @@ defmodule ExChessWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{ExChessWeb.Live.Accounts.UserAuth, :ensure_authenticated}] do
-      live("/home", Live.Games.HomeLive)
+      live("/home", Live.Games.HomeLive, :index)
+      live("/game/new", Live.Games.HomeLive, :new)
       live("/game/:id", Live.Games.GameLive)
 
-      live("/users/settings", Accounts.UserSettingsLive, :edit)
-      live("/users/settings/confirm_email/:token", Accounts.UserSettingsLive, :confirm_email)
+      live("/users/settings", Live.Accounts.UserSettingsLive, :edit)
+      live("/users/settings/confirm_email/:token", Live.Accounts.UserSettingsLive, :confirm_email)
     end
   end
 
@@ -52,12 +53,10 @@ defmodule ExChessWeb.Router do
 
     live_session :current_user,
       on_mount: [{ExChessWeb.Live.Accounts.UserAuth, :mount_current_user}] do
-      live("/users/confirm/:token", UserConfirmationLive, :edit)
-      live("/users/confirm", UserConfirmationInstructionsLive, :new)
+      live("/users/confirm/:token", Live.Accounts.UserConfirmationLive, :edit)
+      live("/users/confirm", Live.Accounts.UserConfirmationInstructionsLive, :new)
     end
   end
-
-  # Development routes
 
   if Application.compile_env(:ex_chess, :dev_routes) do
     import Phoenix.LiveDashboard.Router

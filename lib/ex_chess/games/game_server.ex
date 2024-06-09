@@ -1,11 +1,12 @@
 defmodule ExChess.Games.GameServer do
   @moduledoc false
 
-  use GenServer
+  use GenServer, restart: :transient
 
   require Logger
 
-  alias ExChess.Chess.{Board, Clock, Game, Notations, Move}
+  alias ExChess.Chess.{Board, Clock, Game, Move, Notations}
+  alias ExChess.Games.GameRecord
 
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: via(args[:id]))
@@ -18,10 +19,11 @@ defmodule ExChess.Games.GameServer do
     %Game{
       id: id,
       board: Notations.Fen.start_board(),
-      clock: Clock.new()
+      clock: Clock.new(1_000, 5_000)
     }
     |> tap(fn %{id: id} -> Logger.info("[#{__MODULE__}] Starting game server #{id}") end)
     |> tap(fn game -> broadcast(game, {:game, game}) end)
+    |> tap(fn game -> broadcast({:game_started, game}) end)
     |> then(fn game -> {:ok, game} end)
   end
 
@@ -50,11 +52,36 @@ defmodule ExChess.Games.GameServer do
   end
 
   @impl true
-  def handle_info(:tick, %{clock: clock} = game) do
+  def handle_info(:tick, %{clock: %Clock{status: :stopped} = clock} = game) do
+    game
+    |> Map.put(:clock, clock)
+    |> tap(fn game -> broadcast(game, {:game, game}) end)
+    |> tap(fn game -> broadcast({:game_stopped, game}) end)
+    |> then(fn game -> {:stop, :normal, game} end)
+  end
+
+  @impl true
+  def handle_info(:tick, %{clock: %Clock{} = clock} = game) do
     game
     |> Map.put(:clock, Clock.tick(clock))
-    # |> tap(fn game -> broadcast(game, {:game, game}) end)
+    |> tap(fn game -> broadcast(game, {:game, game}) end)
     |> then(fn game -> {:noreply, game} end)
+  end
+
+  @impl true
+  def terminate(_reason, %{id: id} = game) do
+    id
+    |> GameRecord.get_game!()
+    |> GameRecord.update_game(%{result: :white})
+
+    game
+    |> tap(fn game -> broadcast({:game_stopped, game}) end)
+
+    :ok
+  end
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(ExChess.PubSub, "games")
   end
 
   def subscribe(%{id: id}) do
@@ -63,5 +90,9 @@ defmodule ExChess.Games.GameServer do
 
   defp broadcast(%{id: id}, message) do
     Phoenix.PubSub.broadcast(ExChess.PubSub, "game:#{id}", message)
+  end
+
+  defp broadcast(message) do
+    Phoenix.PubSub.broadcast(ExChess.PubSub, "games", message)
   end
 end

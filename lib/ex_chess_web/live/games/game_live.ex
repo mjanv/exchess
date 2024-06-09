@@ -4,7 +4,7 @@ defmodule ExChessWeb.Live.Games.GameLive do
   use ExChessWeb, :live_view
 
   alias ExChess.Chess.{Board, Game, Move, Position}
-  alias ExChess.Games.{GameServer, GameSupervisor}
+  alias ExChess.Games.GameServer
   alias ExChessWeb.Presence
 
   def mount(%{"id" => id}, _session, socket) do
@@ -13,9 +13,8 @@ defmodule ExChessWeb.Live.Games.GameLive do
     |> then(fn socket ->
       game = %Game{id: id}
 
-      Presence.join(game, socket.assigns.current_user.id)
+      Presence.game(game, socket.assigns.current_user)
       GameServer.subscribe(game)
-      :ok = GameSupervisor.start(game)
       game = GameServer.call(game, :game)
 
       assign(socket, :board, game.board)
@@ -23,7 +22,7 @@ defmodule ExChessWeb.Live.Games.GameLive do
     |> assign(:selected, nil)
     |> assign(:moves, [])
     |> assign(:players, %{})
-    |> assign(:clocks, %{})
+    |> assign(:clock, %{})
     |> then(fn socket -> {:ok, socket} end)
   end
 

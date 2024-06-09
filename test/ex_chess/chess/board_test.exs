@@ -3,7 +3,7 @@ defmodule ExChess.Chess.BoardTest do
 
   use ExUnit.Case
 
-  alias ExChess.Chess.{Board, Piece, Move}
+  alias ExChess.Chess.{Board, Move, Piece}
 
   test "A piece can be moved on a board" do
     pawn = %Piece{color: :white, role: :pawn}

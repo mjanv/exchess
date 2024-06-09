@@ -1,9 +1,10 @@
-defmodule ExChessWeb.UserAuthTest do
+defmodule ExChessWeb.Live.Accounts.UserAuthTest do
   use ExChessWeb.ConnCase, async: true
 
-  alias Phoenix.LiveView
   alias ExChess.Accounts
-  alias ExChessWeb.UserAuth
+  alias ExChessWeb.Live.Accounts.UserAuth
+  alias Phoenix.LiveView
+
   import ExChess.AccountsFixtures
 
   @remember_me_cookie "_ex_chess_web_user_remember_me"
