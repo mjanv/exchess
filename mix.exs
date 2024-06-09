@@ -25,6 +25,7 @@ defmodule ExChess.MixProject do
 
   defp deps do
     [
+      {:bcrypt_elixir, "~> 3.0"},
       {:phoenix, "~> 1.7.12"},
       {:phoenix_ecto, "~> 4.4"},
       {:ecto_sql, "~> 3.10"},
@@ -49,7 +50,9 @@ defmodule ExChess.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.7"},
-      {:uuid, "~> 1.1"}
+      {:uuid, "~> 1.1"},
+      {:swoosh, "~> 1.4"},
+      {:hackney, "~> 1.20"}
     ]
   end
 

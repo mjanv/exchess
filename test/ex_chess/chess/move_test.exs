@@ -28,7 +28,7 @@ defmodule ExChess.Chess.MoveTest do
       end
     end
   end
-  
+
   describe "black pawn" do
     for {position, destinations} <- [
           {:a1, []},

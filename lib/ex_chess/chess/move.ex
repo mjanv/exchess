@@ -32,7 +32,7 @@ defmodule ExChess.Chess.Move do
   def do_possible_moves(%Board{}, %Position{rank: rank} = s, %Piece{color: :white, role: :pawn}) do
     1..if(rank == 2, do: 2, else: 1) |> Enum.map(&{0, &1}) |> check_route(s)
   end
-  
+
   def do_possible_moves(%Board{}, %Position{rank: rank} = s, %Piece{color: :black, role: :pawn}) do
     1..if(rank == 7, do: 2, else: 1) |> Enum.map(&{0, -&1}) |> check_route(s)
   end

@@ -13,7 +13,7 @@ defmodule ExChessWeb.Live.BoardLive do
     |> then(fn socket ->
       game = %Game{id: id}
 
-      Presence.join(game, "me")
+      Presence.join(game, socket.assigns.current_user.id)
       GameServer.subscribe(game)
       :ok = GameSupervisor.start(game)
       game = GameServer.call(game, :game)
@@ -46,7 +46,7 @@ defmodule ExChessWeb.Live.BoardLive do
   def handle_event(
         "select",
         %{"value" => "", "x" => x, "y" => y},
-        %{assigns: %{id: id, selected: selected, board: board}} = socket
+        %{assigns: %{id: id, selected: selected, board: board, moves: moves}} = socket
       ) do
     position = %Position{column: String.to_integer(x), rank: String.to_integer(y)}
 
@@ -59,8 +59,12 @@ defmodule ExChessWeb.Live.BoardLive do
           {p, []}
 
         {s, p} ->
-          move = %Move{from: s, to: p, piece: Board.at(board, s)} |> IO.inspect()
-          GameServer.cast(%{id: id}, {:move, move})
+          move = %Move{from: s, to: p, piece: Board.at(board, s)}
+
+          if move in moves do
+            GameServer.cast(%{id: id}, {:move, move})
+          end
+
           {nil, []}
       end
 

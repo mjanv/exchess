@@ -4,6 +4,7 @@ defmodule ExChessWeb.Live.HomeLive do
   use ExChessWeb, :live_view
 
   def mount(_params, _session, socket) do
+    IO.inspect(socket.assigns.current_user)
     socket = assign(socket, :games, ExChess.GameSupervisor.children())
     {:ok, socket}
   end
