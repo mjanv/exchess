@@ -1,4 +1,4 @@
-defmodule ExChessWeb.UserRegistrationLive do
+defmodule ExChessWeb.Accounts.UserRegistrationLive do
   use ExChessWeb, :live_view
 
   alias ExChess.Accounts

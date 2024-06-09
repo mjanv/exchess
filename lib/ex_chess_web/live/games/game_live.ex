@@ -1,10 +1,10 @@
-defmodule ExChessWeb.Live.BoardLive do
+defmodule ExChessWeb.Live.Games.GameLive do
   @moduledoc false
 
   use ExChessWeb, :live_view
 
   alias ExChess.Chess.{Board, Game, Move, Position}
-  alias ExChess.{GameServer, GameSupervisor}
+  alias ExChess.Games.{GameServer, GameSupervisor}
   alias ExChessWeb.Presence
 
   def mount(%{"id" => id}, _session, socket) do

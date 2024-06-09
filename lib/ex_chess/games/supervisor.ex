@@ -1,4 +1,4 @@
-defmodule ExChess.Supervisor do
+defmodule ExChess.Games.Supervisor do
   @moduledoc false
 
   use Supervisor
@@ -10,8 +10,8 @@ defmodule ExChess.Supervisor do
   @impl true
   def init(_args) do
     children = [
-      ExChess.Games.Supervisor,
-      ExChess.Repo
+      {Registry, keys: :unique, name: ExChess.GameRegistry},
+      ExChess.Games.GameSupervisor
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

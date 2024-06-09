@@ -3,7 +3,7 @@ defmodule GameComponent do
 
   use ExChessWeb, :live_component
 
-  alias ExChess.GameServer
+  alias ExChess.Games.GameServer
 
   def mount(socket) do
     {:ok, socket}
@@ -22,7 +22,7 @@ defmodule GameComponent do
   def render(assigns) do
     ~H"""
     <div>
-    <.link href={~p"/board/#{@game.id}"}>Link</.link>
+    <.link href={~p"/game/#{@game.id}"}>Link</.link>
     <%= inspect(@game) %>
     </div>
     """

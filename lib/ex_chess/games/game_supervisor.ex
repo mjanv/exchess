@@ -1,10 +1,10 @@
-defmodule ExChess.GameSupervisor do
+defmodule ExChess.Games.GameSupervisor do
   @moduledoc false
 
   use DynamicSupervisor
 
   alias ExChess.Chess.Game
-  alias ExChess.GameServer
+  alias ExChess.Games.GameServer
 
   def start_link(args) do
     DynamicSupervisor.start_link(__MODULE__, args, name: __MODULE__)

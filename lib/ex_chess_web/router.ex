@@ -22,10 +22,10 @@ defmodule ExChessWeb.Router do
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{ExChessWeb.UserAuth, :redirect_if_user_is_authenticated}] do
-      live("/users/register", UserRegistrationLive, :new)
-      live("/users/log_in", UserLoginLive, :new)
-      live("/users/reset_password", UserForgotPasswordLive, :new)
-      live("/users/reset_password/:token", UserResetPasswordLive, :edit)
+      live("/users/register", Accounts.UserRegistrationLive, :new)
+      live("/users/log_in", Accounts.UserLoginLive, :new)
+      live("/users/reset_password", Accounts.UserForgotPasswordLive, :new)
+      live("/users/reset_password/:token", Accounts.UserResetPasswordLive, :edit)
     end
 
     get("/", PageController, :home)
@@ -37,11 +37,11 @@ defmodule ExChessWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{ExChessWeb.UserAuth, :ensure_authenticated}] do
-      live("/home", Live.HomeLive)
-      live("/board/:id", Live.BoardLive)
+      live("/home", Live.Games.HomeLive)
+      live("/game/:id", Live.Games.GameLive)
 
-      live("/users/settings", UserSettingsLive, :edit)
-      live("/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email)
+      live("/users/settings", Accounts.UserSettingsLive, :edit)
+      live("/users/settings/confirm_email/:token", Accounts.UserSettingsLive, :confirm_email)
     end
   end
 

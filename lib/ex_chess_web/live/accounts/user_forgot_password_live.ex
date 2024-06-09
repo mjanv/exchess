@@ -1,4 +1,4 @@
-defmodule ExChessWeb.UserForgotPasswordLive do
+defmodule ExChessWeb.Accounts.UserForgotPasswordLive do
   use ExChessWeb, :live_view
 
   alias ExChess.Accounts

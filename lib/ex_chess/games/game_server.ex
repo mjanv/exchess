@@ -1,4 +1,4 @@
-defmodule ExChess.GameServer do
+defmodule ExChess.Games.GameServer do
   @moduledoc false
 
   use GenServer
