@@ -15,7 +15,7 @@ defmodule ExChess.MixProject do
 
   def application do
     [
-      mod: {ExChess.Application, []},
+      mod: {ExChess, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end

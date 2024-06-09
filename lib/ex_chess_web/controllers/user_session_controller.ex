@@ -2,7 +2,7 @@ defmodule ExChessWeb.UserSessionController do
   use ExChessWeb, :controller
 
   alias ExChess.Accounts
-  alias ExChessWeb.Accounts.UserAuth
+  alias ExChessWeb.Live.Accounts.UserAuth
 
   def create(conn, %{"_action" => "registered"} = params) do
     create(conn, params, "Account created successfully!")

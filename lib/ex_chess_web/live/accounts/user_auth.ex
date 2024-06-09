@@ -1,4 +1,4 @@
-defmodule ExChessWeb.Accounts.UserAuth do
+defmodule ExChessWeb.Live.Accounts.UserAuth do
   use ExChessWeb, :verified_routes
 
   import Plug.Conn
@@ -135,13 +135,13 @@ defmodule ExChessWeb.Accounts.UserAuth do
       defmodule ExChessWeb.PageLive do
         use ExChessWeb, :live_view
 
-        on_mount {ExChessWeb.Accounts.UserAuth, :mount_current_user}
+        on_mount {ExChessWeb.Live.Accounts.UserAuth, :mount_current_user}
         ...
       end
 
   Or use the `live_session` of your router to invoke the on_mount callback:
 
-      live_session :authenticated, on_mount: [{ExChessWeb.Accounts.UserAuth, :ensure_authenticated}] do
+      live_session :authenticated, on_mount: [{ExChessWeb.Live.Accounts.UserAuth, :ensure_authenticated}] do
         live "/profile", ProfileLive, :index
       end
   """

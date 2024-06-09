@@ -1,9 +1,21 @@
 defmodule ExChess do
-  @moduledoc """
-  ExChess keeps the contexts that define your domain
-  and business logic.
+  @moduledoc false
 
-  Contexts are also responsible for managing your data, regardless
-  if it comes from the database, an external API or others.
-  """
+  use Application
+
+  @impl true
+  def start(_type, _args) do
+    children = [
+      ExChess.Supervisor,
+      ExChessWeb.Supervisor
+    ]
+
+    Supervisor.start_link(children, strategy: :one_for_one, name: ExChess.Application)
+  end
+
+  @impl true
+  def config_change(changed, _new, removed) do
+    ExChessWeb.Endpoint.config_change(changed, removed)
+    :ok
+  end
 end
