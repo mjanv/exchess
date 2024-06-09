@@ -1,0 +1,16 @@
+Selected: <%= inspect(@selected) %>
+<br \>
+Players: <%= inspect(@players) %>
+<br \>
+Clocks: <%= inspect(@clocks) %>
+<br \>
+Moves: <%= inspect(@moves) %>
+<br \>
+<.back navigate={~p"/home"}>Home</.back>
+<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-3xl">
+    <div class="w-full flex flex-col items-center">
+      <.board pieces={@board.pieces} selected={@selected} moves={@moves} />
+    </div>
+  </div>
+</div>

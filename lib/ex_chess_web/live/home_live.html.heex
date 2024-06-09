@@ -1,0 +1,13 @@
+<h1>Home</h1>
+
+<h2>Active games (<%= length(@games) %>)</h2>
+
+<%= for game <- @games do %>
+  <.live_component module={GameComponent} id={"game-" <> game.id} game={game} />
+<% end %>
+
+
+
+<br \>
+
+<.button phx-click="create_game">Create game</.button>
