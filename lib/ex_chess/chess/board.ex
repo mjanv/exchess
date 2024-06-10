@@ -40,3 +40,29 @@ defmodule ExChess.Chess.Board do
   def turn(%__MODULE__{turn: :white} = board), do: %{board | turn: :black}
   def turn(%__MODULE__{turn: :black} = board), do: %{board | turn: :white}
 end
+
+defimpl Inspect, for: ExChess.Chess.Board do
+  alias ExChess.Chess.Position
+
+  def inspect(board, _opts) do
+    for rank <- 1..8 do
+      for column <- 1..8 do
+        board.pieces
+        |> Map.get(Position.as_atom(%Position{column: column, rank: rank}))
+        |> case do
+          nil -> "_"
+          x -> p(x.role)
+        end
+      end
+      |> Enum.join("|")
+    end
+    |> Enum.join("\n")
+  end
+
+  def p(:king), do: "♚"
+  def p(:queen), do: "♛"
+  def p(:rook), do: "♜"
+  def p(:bishop), do: "♝"
+  def p(:knight), do: "♞"
+  def p(:pawn), do: "♟︎"
+end

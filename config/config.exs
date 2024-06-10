@@ -42,4 +42,7 @@ config :phoenix, :json_library, Jason
 
 config :ex_chess, ExChess.Mailer, adapter: Swoosh.Adapters.Local
 
+config :libcluster,
+  topologies: []
+
 import_config "#{config_env()}.exs"

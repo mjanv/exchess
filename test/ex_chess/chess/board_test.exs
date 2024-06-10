@@ -3,7 +3,25 @@ defmodule ExChess.Chess.BoardTest do
 
   use ExUnit.Case
 
-  alias ExChess.Chess.{Board, Move, Piece}
+  import ExUnit.CaptureLog
+  require Logger
+
+  alias ExChess.Chess.{Board, Move, Notations, Piece}
+
+  test "A board can be represented as a string" do
+    board = "♜|♞|♝|♛|♚|♝|♞|♜
+♟︎|♟︎|♟︎|♟︎|♟︎|♟︎|♟︎|♟︎
+_|_|_|_|_|_|_|_
+_|_|_|_|_|_|_|_
+_|_|_|_|_|_|_|_
+_|_|_|_|_|_|_|_
+♟︎|♟︎|♟︎|♟︎|♟︎|♟︎|♟︎|♟︎
+♜|♞|♝|♛|♚|♝|♞|♜"
+
+    assert capture_log(fn ->
+             Logger.error("#{inspect(Notations.Fen.start_board())}")
+           end) =~ board
+  end
 
   test "A piece can be moved on a board" do
     pawn = %Piece{color: :white, role: :pawn}

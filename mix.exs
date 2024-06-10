@@ -54,6 +54,7 @@ defmodule ExChess.MixProject do
       {:uuid, "~> 1.1"},
       {:swoosh, "~> 1.4"},
       {:hackney, "~> 1.20"},
+      {:libcluster, "~> 3.3"},
 
       # Observability
       {:telemetry_metrics, "~> 1.0"},

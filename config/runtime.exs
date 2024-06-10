@@ -1,10 +1,8 @@
 import Config
 
-if System.get_env("PHX_SERVER") do
-  config :ex_chess, ExChessWeb.Endpoint, server: true
-end
-
 if config_env() == :prod do
+  config :ex_chess, ExChessWeb.Endpoint, server: true
+
   config :ex_chess, ExChess.Repo,
     # ssl: true,
     url:
@@ -30,4 +28,12 @@ if config_env() == :prod do
         environment variable SECRET_KEY_BASE is missing.
         You can generate one by calling: mix phx.gen.secret
         """)
+
+  config :libcluster,
+    local: [
+      example: [
+        strategy: Cluster.Strategy.Epmd,
+        config: [hosts: [:"a@127.0.0.1", :"b@127.0.0.1"]]
+      ]
+    ]
 end
