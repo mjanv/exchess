@@ -28,7 +28,6 @@ defmodule ExChessWeb.Router do
       live("/users/reset_password/:token", Live.Accounts.UserResetPasswordLive, :edit)
     end
 
-    get("/", PageController, :home)
     post("/users/log_in", UserSessionController, :create)
   end
 
@@ -41,6 +40,9 @@ defmodule ExChessWeb.Router do
       live("/game/new", Live.Games.HomeLive, :new)
       live("/game/:id", Live.Games.GameLive)
 
+      live("/archives/games", Live.Archives.GamesLive, :index)
+      live("/archives/upload", Live.Archives.UploadLive, :new)
+
       live("/users/settings", Live.Accounts.UserSettingsLive, :edit)
       live("/users/settings/confirm_email/:token", Live.Accounts.UserSettingsLive, :confirm_email)
     end
@@ -49,6 +51,7 @@ defmodule ExChessWeb.Router do
   scope "/", ExChessWeb do
     pipe_through([:browser])
 
+    get("/", PageController, :home)
     delete("/users/log_out", UserSessionController, :delete)
 
     live_session :current_user,

@@ -1,0 +1,27 @@
+
+<form id="upload-form" phx-submit="save" phx-change="validate">
+    <.live_file_input upload={@uploads.avatar} />
+    <.button type="submit">Upload</.button>
+  </form>
+
+<section phx-drop-target={@uploads.avatar.ref}>
+    <%= for entry <- @uploads.avatar.entries do %>
+      <article class="upload-entry">
+        <.live_img_preview entry={entry} />
+
+        <progress value={entry.progress} max="100"> <%= entry.progress %>% </progress>
+        <.button type="button" phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</.button>
+
+        <%= for err <- upload_errors(@uploads.avatar, entry) do %>
+          <p class="alert alert-danger"><%= error_to_string(err) %></p>
+        <% end %>
+    
+      </article>
+    <% end %>
+
+    <%= inspect(@status) %>
+
+    <%= for err <- upload_errors(@uploads.avatar) do %>
+      <p class="alert alert-danger"><%= error_to_string(err) %></p>
+    <% end %>
+</section>

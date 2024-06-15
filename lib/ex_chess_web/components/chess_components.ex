@@ -29,7 +29,7 @@ defmodule ExChessWeb.Components.ChessComponents do
   def piece(assigns) do
     ~H"""
     <div
-      style={"left: #{(((8 - @position.column) / 8)) * 100}%; top: #{(((8 - @position.rank) / 8)) * 100}%; width: 12.5%; height: 12.5%;"}
+      style={"left: #{(((@position.column - 1) / 8)) * 100}%; top: #{(((8 - @position.rank) / 8)) * 100}%; width: 12.5%; height: 12.5%;"}
       class="absolute aspect-square flex overflow-clip transition-all pointer-events-none"
     >
       <div class="relative w-full h-full flex justify-center items-center">

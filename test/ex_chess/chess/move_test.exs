@@ -109,6 +109,29 @@ defmodule ExChess.Chess.MoveTest do
         assert Enum.map(moves, fn move -> Position.as_atom(move.to) end) == destinations
       end
     end
+
+    test "moves until there is a piece from the same color" do
+      position = :e4
+      piece = %Piece{color: :white, role: :bishop}
+
+      board = %Board{
+        pieces: %{
+          position => piece,
+          :b1 => %Piece{color: :white, role: :pawn},
+          :g6 => %Piece{color: :white, role: :pawn},
+          :b7 => %Piece{color: :white, role: :pawn},
+          :f3 => %Piece{color: :white, role: :pawn}
+        }
+      }
+
+      destinations = [:c2, :d3] ++ [:f5] ++ [:c6, :d5] ++ []
+
+      moves = Move.possible_moves(board, Position.from_atom(position))
+
+      assert Enum.all?(moves, fn %Move{} = move -> move.piece == piece end)
+      assert Enum.all?(moves, fn %Move{} = move -> Position.as_atom(move.from) == position end)
+      assert Enum.map(moves, fn move -> Position.as_atom(move.to) end) == destinations
+    end
   end
 
   describe "queen" do
@@ -185,6 +208,28 @@ defmodule ExChess.Chess.MoveTest do
         assert Enum.all?(moves, fn %Move{} = move -> Position.as_atom(move.from) == position end)
         assert Enum.map(moves, fn move -> Position.as_atom(move.to) end) == destinations
       end
+    end
+
+    test "moves only if there is not a piece from the same color" do
+      position = :e4
+      piece = %Piece{color: :white, role: :knight}
+
+      board = %Board{
+        pieces: %{
+          position => piece,
+          :g3 => %Piece{color: :white, role: :pawn},
+          :c3 => %Piece{color: :white, role: :pawn},
+          :d6 => %Piece{color: :white, role: :pawn}
+        }
+      }
+
+      destinations = [:f6, :g5, :f2, :d2, :c5]
+
+      moves = Move.possible_moves(board, Position.from_atom(position))
+
+      assert Enum.all?(moves, fn %Move{} = move -> move.piece == piece end)
+      assert Enum.all?(moves, fn %Move{} = move -> Position.as_atom(move.from) == position end)
+      assert Enum.map(moves, fn move -> Position.as_atom(move.to) end) == destinations
     end
   end
 

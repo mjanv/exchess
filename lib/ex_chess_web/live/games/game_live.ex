@@ -7,61 +7,68 @@ defmodule ExChessWeb.Live.Games.GameLive do
   alias ExChess.Games.GameServer
   alias ExChessWeb.Presence
 
-  def mount(%{"id" => id}, _session, socket) do
-    socket
-    |> assign(:id, id)
-    |> then(fn socket ->
-      game = %Game{id: id}
+  def mount(%{"id" => id}, _session, %{assigns: %{current_user: user}} = socket) do
+    cond do
+      GameServer.dead?(id) ->
+        {:ok, push_navigate(socket, to: "/", replace: false)}
 
-      Presence.game(game, socket.assigns.current_user)
-      GameServer.subscribe(game)
-      game = GameServer.call(game, :game)
+      !connected?(socket) ->
+        socket
+        |> assign(:game, Game.new(id, []) |> IO.inspect())
+        |> assign(:selected, nil)
+        |> assign(:moves, [])
+        |> assign(:spectators, %{})
+        |> then(fn socket -> {:ok, socket} end)
 
-      assign(socket, :board, game.board)
-    end)
-    |> assign(:selected, nil)
-    |> assign(:moves, [])
-    |> assign(:players, %{})
-    |> assign(:clock, %{})
-    |> then(fn socket -> {:ok, socket} end)
+      true ->
+        game = GameServer.call(%Game{id: id}, :game)
+        Presence.game(game, user)
+        GameServer.subscribe(game)
+
+        socket
+        |> assign(:game, game)
+        |> assign(:selected, nil)
+        |> assign(:moves, [])
+        |> assign(:spectators, %{})
+        |> then(fn socket -> {:ok, socket} end)
+    end
   end
 
-  def handle_info({:game, %Game{board: board, clock: clock}}, socket) do
+  def handle_info({:game, %Game{} = game}, socket) do
     socket
-    |> assign(:board, board)
-    |> assign(:clock, clock)
+    |> assign(:game, game)
     |> then(fn socket -> {:noreply, socket} end)
   end
 
   def handle_info(
         %{event: "presence_diff", payload: %{leaves: _, joins: joins}},
-        %{assigns: %{players: players}} = socket
+        %{assigns: %{spectators: spectators}} = socket
       ) do
     socket
-    |> assign(:players, Map.merge(players, joins))
+    |> assign(:spectators, Map.merge(spectators, joins))
     |> then(fn socket -> {:noreply, socket} end)
   end
 
   def handle_event(
         "select",
         %{"value" => "", "x" => x, "y" => y},
-        %{assigns: %{id: id, selected: selected, board: board, moves: moves}} = socket
+        %{assigns: %{selected: selected, game: game, moves: moves}} = socket
       ) do
     position = %Position{column: String.to_integer(x), rank: String.to_integer(y)}
 
     {selected, moves} =
       case {selected, position} do
         {nil, p} ->
-          {p, Move.possible_moves(board, position)}
+          {p, Move.possible_moves(game.board, position)}
 
         {s, p} when s == p ->
           {p, []}
 
         {s, p} ->
-          move = %Move{from: s, to: p, piece: Board.at(board, s)}
+          move = %Move{from: s, to: p, piece: Board.at(game.board, s)}
 
           if move in moves do
-            GameServer.cast(%{id: id}, {:move, move})
+            GameServer.cast(game, {:move, move})
           end
 
           {nil, []}

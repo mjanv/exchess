@@ -19,13 +19,15 @@ defmodule ExChess.Games.GameServer do
     %Game{
       id: id,
       board: Notations.Fen.start_board(),
-      clock: Clock.new(1_000, 5_000)
+      clock: Clock.new(1_000, 120_000)
     }
     |> tap(fn %{id: id} -> Logger.info("[#{__MODULE__}] Starting game server #{id}") end)
     |> tap(fn game -> broadcast(game, {:game, game}) end)
     |> tap(fn game -> broadcast({:game_started, game}) end)
     |> then(fn game -> {:ok, game} end)
   end
+
+  def dead?(id), do: id |> via() |> GenServer.whereis() |> is_nil()
 
   def call(%{id: id}, message), do: GenServer.call(via(id), message)
   def cast(%{id: id}, message), do: GenServer.cast(via(id), message)
@@ -47,6 +49,7 @@ defmodule ExChess.Games.GameServer do
     game
     |> Map.put(:clock, Clock.switch(clock))
     |> Map.put(:board, Board.move(board, move))
+    |> tap(fn game -> IO.inspect(game.board) end)
     |> tap(fn game -> broadcast(game, {:game, game}) end)
     |> then(fn game -> {:noreply, game} end)
   end

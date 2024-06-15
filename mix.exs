@@ -52,9 +52,11 @@ defmodule ExChess.MixProject do
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
       {:uuid, "~> 1.1"},
-      {:swoosh, "~> 1.4"},
+      {:swoosh, "~> 1.16"},
       {:hackney, "~> 1.20"},
       {:libcluster, "~> 3.3"},
+      {:flame, "~> 0.1.12"},
+      {:req, "~> 0.4", override: true},
 
       # Observability
       {:telemetry_metrics, "~> 1.0"},

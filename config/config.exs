@@ -14,6 +14,9 @@ config :ex_chess, ExChessWeb.Endpoint,
   pubsub_server: ExChess.PubSub,
   live_view: [signing_salt: "blu0dk60"]
 
+config :flame, :backend, FLAME.LocalBackend
+config :flame, :terminator, shutdown_timeout: :timer.seconds(10)
+
 config :esbuild,
   version: "0.17.11",
   ex_chess: [
