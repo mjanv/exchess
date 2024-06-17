@@ -8,7 +8,7 @@ defmodule ExChess.GamesTest do
 
     import ExChess.GamesFixtures
 
-    @invalid_attrs %{result: nil, black: nil, white: nil}
+    @invalid_attrs %{result: nil, time_control: ""}
 
     test "list_game/0 returns all game" do
       game = game_fixture()
@@ -21,7 +21,7 @@ defmodule ExChess.GamesTest do
     end
 
     test "create_game/1 with valid data creates a game" do
-      valid_attrs = %{result: :draw}
+      valid_attrs = %{player_white: 1, player_black: 2, time_control: :"3+0", result: :draw}
 
       assert {:ok, %Game{} = game} = Games.create_game(valid_attrs)
       assert game.result == :draw

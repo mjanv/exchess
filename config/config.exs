@@ -17,6 +17,8 @@ config :ex_chess, ExChessWeb.Endpoint,
 config :flame, :backend, FLAME.LocalBackend
 config :flame, :terminator, shutdown_timeout: :timer.seconds(10)
 
+config :libcluster, topologies: []
+
 config :esbuild,
   version: "0.17.11",
   ex_chess: [
@@ -44,8 +46,5 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 config :ex_chess, ExChess.Mailer, adapter: Swoosh.Adapters.Local
-
-config :libcluster,
-  topologies: []
 
 import_config "#{config_env()}.exs"

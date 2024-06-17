@@ -9,16 +9,19 @@ defmodule ExChess.Games.GameRecord do
   alias ExChess.Repo
 
   schema "games" do
+    field(:player_white, :id)
+    field(:player_black, :id)
+    field(:against_ia, :boolean, default: false)
+    field(:time_control, Ecto.Enum, values: [:"1+0", :"3+0", :"10+0"])
     field(:result, Ecto.Enum, values: [:unknown, :white, :draw, :black])
 
     timestamps(type: :utc_datetime)
   end
 
-  @doc false
   def changeset(game, attrs) do
     game
-    |> cast(attrs, [:result])
-    |> validate_required([:result])
+    |> cast(attrs, [:player_white, :player_black, :against_ia, :time_control, :result])
+    |> validate_required([:player_white, :against_ia, :time_control])
   end
 
   def list_game, do: Repo.all(__MODULE__)

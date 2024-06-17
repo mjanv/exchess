@@ -15,6 +15,12 @@ defmodule ExChess.Chess.Board do
   def at(%__MODULE__{pieces: pieces}, x) when is_atom(x), do: Map.get(pieces, x)
   def at(%__MODULE__{pieces: pieces}, %Position{} = x), do: Map.get(pieces, Position.as_atom(x))
 
+  def all_positions(%__MODULE__{pieces: pieces}, {role, color}) do
+    pieces
+    |> Enum.filter(fn {_, piece} -> piece.role == role and piece.color == color end)
+    |> Enum.map(fn {position, _} -> Position.from_atom(position) end)
+  end
+
   def place(%__MODULE__{pieces: pieces} = board, %Position{} = position, %Piece{} = piece) do
     %{board | pieces: Map.put(pieces, Position.as_atom(position), piece)}
   end

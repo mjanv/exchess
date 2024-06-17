@@ -17,7 +17,8 @@ defmodule ExChess.Analytics.Online do
   def init(_args) do
     %{
       online_users: 0,
-      online_games: 0
+      online_games: 0,
+      online_nodes: 0
     }
     |> tap(fn _ -> Logger.info("[#{__MODULE__}] Starting server") end)
     |> tap(fn _ -> Process.send_after(self(), :work, @interval) end)
@@ -42,9 +43,12 @@ defmodule ExChess.Analytics.Online do
       |> Enum.map(& &1.active)
       |> Enum.sum()
 
+    online_nodes = 1 + length(Node.list(:hidden))
+
     new_stats = %{
       online_users: online_users,
-      online_games: online_games
+      online_games: online_games,
+      online_nodes: online_nodes
     }
 
     if new_stats != stats do

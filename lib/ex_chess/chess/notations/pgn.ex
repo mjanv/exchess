@@ -38,10 +38,7 @@ defmodule ExChess.Chess.Notations.Pgn do
   end
 
   defp parse_move(line) do
-    IO.inspect(line)
-
     Regex.scan(~r/(\d+).\s+?([0-9a-zA-Z\/\-\+]+)\s+([0-9a-zA-Z\/\-\+]+)/, line)
-    |> IO.inspect()
     |> case do
       [[_, _, w, b]] -> {parse_piece(w), parse_piece(b)}
       _ -> nil

@@ -1,27 +1,59 @@
-<%= inspect(@analytics) %>
+<div class="py-5">
+  <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+    <div class="overflow-hidden rounded-lg bg-black px-4 py-2">
+      <dt class="truncate text-sm font-medium text-gray-100">Online games</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-white"><%= @analytics[:online_games] %></dd>
+    </div>
+    <div class="overflow-hidden rounded-lg bg-black px-4 py-2">
+      <dt class="truncate text-sm font-medium text-gray-100">Online users</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-white"><%= @analytics[:online_users] %></dd>
+    </div>
+    <div class="overflow-hidden rounded-lg bg-black px-4 py-2">
+      <dt class="truncate text-sm font-medium text-gray-100">Online nodes</dt>
+      <dd class="mt-1 text-3xl font-semibold tracking-tight text-white"><%= @analytics[:online_nodes] %></dd>
+    </div>
+  </dl>
+</div>
 
-<.header>
-  Active games (<%= length(@games) %>)
-  <:actions>
-    <.link patch={~p"/game/new"}><.button>New Game</.button></.link>
-  </:actions>
-</.header>
+<div class="divide-y divide-black overflow-hidden rounded-lg bg-white border-2 border-black shadow">
+  <div class="px-4 py-2">
+    <.header>
+      <%= length(@games) %> active games
+      <:actions>
+        <.link patch={~p"/game/new"}><.button>New Game</.button></.link>
+      </:actions>
+    </.header>
+  </div>
+  <div class="px-4 py-2">
+    <.table id="games" rows={@games}>
+      <:col :let={game} label="id"><%= game.id %></:col>
+      <:action :let={game}>
+        <.link href={~p"/game/#{game}"}>See game</.link>
+      </:action>
+    </.table>
+  </div>
+</div>
 
-<.table id="games" rows={@games}>
-  <:col :let={game} label="id"><%= game.id %></:col>
-  <:action :let={game}>
-    <.link  href={~p"/game/#{game}"}>See game</.link>
-  </:action>
-</.table>
-
-<.header>
-  Past games (<%= length(@past_games) %>)
-</.header>
-
-<.table id="games" rows={@past_games}>
-  <:col :let={game} label="id"><%= game.id %></:col>
-  <:col :let={game} label="result"><%= game.result %></:col>
-</.table>
+<div class="mt-8 divide-y divide-black overflow-hidden rounded-lg bg-white border-2 border-black shadow">
+  <div class="px-4 py-2">
+    <.header>
+      <%= length(@past_games) %> past games
+    </.header>
+  </div>
+  <div class="px-4 py-2">
+    <.table id="games" rows={@past_games}>
+      <:col :let={game} label="id"><%= game.id %></:col>
+      <:col :let={game} label="Players">
+        <%= if game.against_ia do %>
+          <%= game.player_white %> vs. IA
+        <% else %>
+          <%= game.player_white %> vs. <%= game.player_black %>
+        <% end %>
+      </:col>
+      <:col :let={game} label="Outcome"><%= game.result %></:col>
+    </.table>
+  </div>
+</div>
 
 
 <.modal :if={@live_action in [:new]} id="game-modal" show on_cancel={JS.patch(~p"/home")}>
@@ -30,6 +62,7 @@
     id={:new}
     action={@live_action}
     game={@game}
+    user={@current_user}
     patch={~p"/home"}
   />
 </.modal>

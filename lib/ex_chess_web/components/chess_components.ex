@@ -7,7 +7,7 @@ defmodule ExChessWeb.Components.ChessComponents do
 
   def board(assigns) do
     ~H"""
-      <div class="relative max-w-xl aspect-square w-full rounded-lg overflow-hidden">
+      <div class="relative max-w-xl aspect-square w-full rounded-lg overflow-hidden border-black border-2">
           <div class="absolute grid grid-cols-8 grid-rows-8 w-full h-full" style="font-family: Arial;">
               <.piece :for={{position, piece} <- Enum.map(@pieces, & &1)} 
                       position={Position.from_atom(position)} piece={piece} />
@@ -33,20 +33,20 @@ defmodule ExChessWeb.Components.ChessComponents do
       class="absolute aspect-square flex overflow-clip transition-all pointer-events-none"
     >
       <div class="relative w-full h-full flex justify-center items-center">
-        <p class={"text-5xl text-center z-10 text-" <> Atom.to_string(@piece.color)}>
-            <%= p(@piece.role) %>
-        </p>
+        <img src={"/images/#{c(@piece)}#{p(@piece)}.svg"} width="48" />
       </div>
     </div>
     """
   end
 
-  def p(:king), do: "♚"
-  def p(:queen), do: "♛"
-  def p(:rook), do: "♜"
-  def p(:bishop), do: "♝"
-  def p(:knight), do: "♞"
-  def p(:pawn), do: "♟︎"
+  def c(%{color: :white}), do: "w"
+  def c(%{color: :black}), do: "b"
+  def p(%{role: :king}), do: "K"
+  def p(%{role: :queen}), do: "Q"
+  def p(%{role: :rook}), do: "R"
+  def p(%{role: :bishop}), do: "B"
+  def p(%{role: :knight}), do: "N"
+  def p(%{role: :pawn}), do: "P"
 
   def tile(assigns) do
     ~H"""
@@ -61,15 +61,15 @@ defmodule ExChessWeb.Components.ChessComponents do
   end
 
   def tile_color({x, y}, %Position{column: column, rank: rank}) when {x, y} == {column, rank},
-    do: :yellow
+    do: "#f0e895"
 
-  def tile_color({x, y}, _) when rem(x, 2) == rem(y, 2), do: :green
-  def tile_color({x, y}, _) when rem(x, 2) != rem(y, 2), do: :brown
+  def tile_color({x, y}, _) when rem(x, 2) == rem(y, 2), do: "#aaaaaa"
+  def tile_color({x, y}, _) when rem(x, 2) != rem(y, 2), do: "#ffffff"
 
   def highlight(assigns) do
     ~H"""
     <button 
-    style={"left: #{((@position.column - 1) / 8) * 100}%; top: #{(((8 - @position.rank) / 8)) * 100}%; width: 12.5%; height: 12.5%; background-color: purple;"} 
+    style={"left: #{((@position.column - 1) / 8) * 100}%; top: #{(((8 - @position.rank) / 8)) * 100}%; width: 12.5%; height: 12.5%; background-color: purple; opacity: 0.4;"} 
             class="absolute aspect-square flex overflow-clip transition-all pointer-events-none" 
             >
       <div class="relative w-full h-full flex justify-center items-center">

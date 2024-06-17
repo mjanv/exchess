@@ -13,11 +13,11 @@ defmodule ExChess.Chess.Game do
 
   defstruct [:id, :players, :board, :clock, :history]
 
-  def new(id \\ nil, players \\ []) do
+  def new(id \\ nil, players \\ [], time \\ 120_000) do
     %__MODULE__{
       id: id || UUID.uuid4(),
       players: players |> Enum.map(fn p -> {p.color, p} end) |> Enum.into(%{}),
-      clock: Clock.new(1_000, 120_000),
+      clock: Clock.new(1_000, time),
       board: Notations.Fen.start_board(),
       history: []
     }

@@ -21,7 +21,8 @@ defmodule ExChess.Supervisor do
       ExChess.Repo,
       ExChess.Analytics.Supervisor,
       ExChess.Archives.Supervisor,
-      ExChess.Games.Supervisor
+      ExChess.Games.Supervisor,
+      ExChess.Models.Supervisor
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

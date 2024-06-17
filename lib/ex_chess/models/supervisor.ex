@@ -1,7 +1,9 @@
-defmodule ExChess.Games.Supervisor do
+defmodule ExChess.Models.Supervisor do
   @moduledoc false
 
   use Supervisor
+
+  alias ExChess.Models.EvaluationModel
 
   def start_link(args) do
     Supervisor.start_link(__MODULE__, args, name: __MODULE__)
@@ -10,8 +12,12 @@ defmodule ExChess.Games.Supervisor do
   @impl true
   def init(_args) do
     children = [
-      {Registry, keys: :unique, name: ExChess.GameRegistry},
-      ExChess.Games.GameSupervisor
+      {
+        Nx.Serving,
+        serving: EvaluationModel.serving(),
+        name: ExChess.Models.EvaluationServing,
+        batch_timeout: 100
+      }
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

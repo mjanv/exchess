@@ -5,6 +5,7 @@ defmodule ExChessWeb.Live.Games.GameLive do
 
   alias ExChess.Chess.{Board, Game, Move, Position}
   alias ExChess.Games.GameServer
+  alias ExChess.Models.EvaluationModel
   alias ExChessWeb.Presence
 
   def mount(%{"id" => id}, _session, %{assigns: %{current_user: user}} = socket) do
@@ -14,7 +15,8 @@ defmodule ExChessWeb.Live.Games.GameLive do
 
       !connected?(socket) ->
         socket
-        |> assign(:game, Game.new(id, []) |> IO.inspect())
+        |> assign(:game, Game.new(id, []))
+        |> assign(:evaluation, 0.0)
         |> assign(:selected, nil)
         |> assign(:moves, [])
         |> assign(:spectators, %{})
@@ -27,25 +29,24 @@ defmodule ExChessWeb.Live.Games.GameLive do
 
         socket
         |> assign(:game, game)
+        |> assign(:evaluation, EvaluationModel.eval(game.board))
         |> assign(:selected, nil)
         |> assign(:moves, [])
-        |> assign(:spectators, %{})
+        |> assign(:spectators, Presence.list_game(game))
         |> then(fn socket -> {:ok, socket} end)
     end
   end
 
-  def handle_info({:game, %Game{} = game}, socket) do
+  def handle_info({:game, %Game{board: board} = game}, socket) do
     socket
+    |> assign(:evaluation, EvaluationModel.eval(board))
     |> assign(:game, game)
     |> then(fn socket -> {:noreply, socket} end)
   end
 
-  def handle_info(
-        %{event: "presence_diff", payload: %{leaves: _, joins: joins}},
-        %{assigns: %{spectators: spectators}} = socket
-      ) do
+  def handle_info(%{event: "presence_diff"}, %{assigns: %{game: game}} = socket) do
     socket
-    |> assign(:spectators, Map.merge(spectators, joins))
+    |> assign(:spectators, Presence.list_game(game))
     |> then(fn socket -> {:noreply, socket} end)
   end
 
@@ -78,5 +79,15 @@ defmodule ExChessWeb.Live.Games.GameLive do
     |> assign(selected: selected)
     |> assign(moves: moves)
     |> then(fn socket -> {:noreply, socket} end)
+  end
+
+  defp timer(ms) do
+    s = ceil(ms / 1_000)
+
+    [
+      (s / 60) |> ceil() |> Integer.to_string() |> String.pad_leading(2, "0"),
+      s |> rem(60) |> Integer.to_string() |> String.pad_leading(2, "0")
+    ]
+    |> Enum.join(":")
   end
 end

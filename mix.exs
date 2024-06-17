@@ -57,6 +57,8 @@ defmodule ExChess.MixProject do
       {:libcluster, "~> 3.3"},
       {:flame, "~> 0.1.12"},
       {:req, "~> 0.4", override: true},
+      {:axon, "~> 0.6.1"},
+      {:exla, "~> 0.7.2"},
 
       # Observability
       {:telemetry_metrics, "~> 1.0"},
@@ -69,7 +71,13 @@ defmodule ExChess.MixProject do
 
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
+      setup: [
+        "deps.get",
+        "ecto.setup",
+        "cmd --cd assets npm install",
+        "assets.setup",
+        "assets.build"
+      ],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       quality: ["format", "credo --strict"],
@@ -80,7 +88,8 @@ defmodule ExChess.MixProject do
         "tailwind ex_chess --minify",
         "esbuild ex_chess --minify",
         "phx.digest"
-      ]
+      ],
+      deploy: ["cmd fly scale count 0 --region cdg,iad,syd --max-per-region 1"]
     ]
   end
 end

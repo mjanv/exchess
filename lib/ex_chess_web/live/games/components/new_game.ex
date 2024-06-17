@@ -3,7 +3,7 @@ defmodule ExChessWeb.Live.Games.Components.NewGame do
 
   use ExChessWeb, :live_component
 
-  alias ExChess.Chess.Game
+  alias ExChess.Chess.{Game, Player}
   alias ExChess.Games
 
   @impl true
@@ -23,14 +23,19 @@ defmodule ExChessWeb.Live.Games.Components.NewGame do
         phx-submit="save"
       >
         <.input
-          field={@form[:result]}
+          field={@form[:time_control]}
           type="select"
-          label="Result"
+          label="Time Control"
           prompt="Choose a value"
-          options={Ecto.Enum.values(ExChess.Games.GameRecord, :result)}
+          options={Ecto.Enum.values(ExChess.Games.GameRecord, :time_control)}
+        />
+        <.input
+          field={@form[:against_ia]}
+          type="checkbox"
+          label="Against IA"
         />
         <:actions>
-          <.button phx-disable-with="Saving...">Save Game</.button>
+          <.button phx-disable-with="Saving...">Start the game</.button>
         </:actions>
       </.simple_form>
     </div>
@@ -59,10 +64,30 @@ defmodule ExChessWeb.Live.Games.Components.NewGame do
 
   def handle_event("save", %{"game_record" => params}, socket) do
     params
+    |> Map.merge(%{
+      "player_white" => Integer.to_string(socket.assigns.user.id),
+      "result" => "unknown"
+    })
     |> Games.create_game()
     |> case do
-      {:ok, game} ->
-        game = %Game{id: Integer.to_string(game.id)}
+      {:ok, game_record} ->
+        time =
+          case game_record.time_control do
+            :"1+0" -> 60_000
+            :"3+0" -> 180_000
+            :"10+0" -> 600_000
+          end
+
+        game =
+          Game.new(
+            Integer.to_string(game_record.id),
+            [
+              %Player{color: :white, id: game_record.player_white},
+              %Player{color: :black, id: -1}
+            ],
+            time
+          )
+
         :ok = Games.start(game)
 
         socket

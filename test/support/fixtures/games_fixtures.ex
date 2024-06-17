@@ -2,6 +2,9 @@ defmodule ExChess.GamesFixtures do
   @moduledoc false
 
   @game %{
+    player_white: 1,
+    player_black: 2,
+    time_control: :"3+0",
     result: :draw
   }
 
