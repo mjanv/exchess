@@ -1,4 +1,4 @@
-defmodule ExChess do
+defmodule ExChess.Application do
   @moduledoc false
 
   use Application

@@ -16,7 +16,7 @@ defmodule ExChess.Chess.Position do
   end
 
   def valid?(%__MODULE__{column: c, rank: r}) do
-    1 <= r and r <= 8 and (1 <= c and c <= 8)
+    1 <= r and r <= 8 and 1 <= c and c <= 8
   end
 
   def as_atom(%__MODULE__{column: column, rank: rank}) do

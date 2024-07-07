@@ -2,7 +2,7 @@ defmodule ExChessWeb.Home.Controllers.ErrorHTMLTest do
   use ExChessWeb.ConnCase, async: true
 
   import Phoenix.Template
-  
+
   alias ExChessWeb.Home.Controllers.ErrorHTML
 
   test "renders 404.html" do
