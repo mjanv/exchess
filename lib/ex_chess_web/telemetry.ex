@@ -1,13 +1,16 @@
 defmodule ExChessWeb.Telemetry do
+  @moduledoc false
+
   use Supervisor
+
   import Telemetry.Metrics
 
-  def start_link(arg) do
-    Supervisor.start_link(__MODULE__, arg, name: __MODULE__)
+  def start_link(args) do
+    Supervisor.start_link(__MODULE__, args, name: __MODULE__)
   end
 
   @impl true
-  def init(_arg) do
+  def init(_args) do
     children = [
       # Telemetry poller will execute the given period measurements
       # every 10_000ms. Learn more here: https://hexdocs.pm/telemetry_metrics

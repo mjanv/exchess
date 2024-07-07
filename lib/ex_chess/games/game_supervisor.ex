@@ -1,22 +1,22 @@
 defmodule ExChess.Games.GameSupervisor do
   @moduledoc false
 
-  use DynamicSupervisor
+  use Horde.DynamicSupervisor
 
   alias ExChess.Chess.Game
   alias ExChess.Games.GameServer
 
   def start_link(args) do
-    DynamicSupervisor.start_link(__MODULE__, args, name: __MODULE__)
+    Horde.DynamicSupervisor.start_link(__MODULE__, args, name: __MODULE__)
   end
 
   @impl true
   def init(_args) do
-    DynamicSupervisor.init(strategy: :one_for_one)
+    Horde.DynamicSupervisor.init(strategy: :one_for_one)
   end
 
   def start(%Game{id: id, clock: clock}) do
-    case DynamicSupervisor.start_child(
+    case Horde.DynamicSupervisor.start_child(
            __MODULE__,
            {GameServer, [id: id, time: clock.remaining.white]}
          ) do
@@ -27,10 +27,10 @@ defmodule ExChess.Games.GameSupervisor do
 
   def children do
     __MODULE__
-    |> Supervisor.which_children()
+    |> Horde.DynamicSupervisor.which_children()
     |> Enum.map(fn
       {:undefined, pid, :worker, _} ->
-        case Registry.keys(ExChess.GameRegistry, pid) do
+        case Horde.Registry.keys(ExChess.GameRegistry, pid) do
           [] -> nil
           [id] -> %Game{id: id}
         end

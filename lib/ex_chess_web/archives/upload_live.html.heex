@@ -2,7 +2,7 @@
 <form id="upload-form" phx-submit="save" phx-change="validate">
     <.live_file_input upload={@uploads.avatar} />
     <.button type="submit">Upload</.button>
-  </form>
+</form>
 
 <section phx-drop-target={@uploads.avatar.ref}>
     <%= for entry <- @uploads.avatar.entries do %>

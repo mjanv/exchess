@@ -22,14 +22,13 @@ defmodule ExChess.Chess.Clock do
   end
 
   def start(%__MODULE__{interval: interval, timer: nil} = clock) do
-    {:ok, {:interval, ref}} = :timer.send_interval(interval, :tick)
-    %{clock | status: :started, timer: ref}
+    %{clock | status: :started, timer: :timer.send_interval(interval, :tick)}
   end
 
   def start(%__MODULE__{} = clock), do: clock
 
-  def stop(%__MODULE__{timer: ref} = clock) do
-    {:ok, _} = :timer.cancel(ref)
+  def stop(%__MODULE__{timer: timer} = clock) do
+    {:ok, _} = :timer.cancel(timer)
     %{clock | status: :stopped, timer: nil}
   end
 

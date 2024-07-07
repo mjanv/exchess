@@ -16,7 +16,7 @@ defmodule ExChess.MixProject do
   def application do
     [
       mod: {ExChess, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :os_mon, :runtime_tools]
     ]
   end
 
@@ -50,11 +50,12 @@ defmodule ExChess.MixProject do
 
       # Backend
       {:ecto_sql, "~> 3.10"},
-      {:postgrex, ">= 0.0.0"},
+      {:postgrex, "~> 0.18"},
       {:uuid, "~> 1.1"},
       {:swoosh, "~> 1.16"},
       {:hackney, "~> 1.20"},
       {:libcluster, "~> 3.3"},
+      {:horde, "~> 0.9"},
       {:flame, "~> 0.1.12"},
       {:req, "~> 0.4", override: true},
       {:axon, "~> 0.6.1"},
@@ -65,7 +66,8 @@ defmodule ExChess.MixProject do
       {:telemetry_poller, "~> 1.0"},
 
       # Development tools
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -80,7 +82,7 @@ defmodule ExChess.MixProject do
       ],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      quality: ["format", "credo --strict"],
+      quality: ["format", "credo --strict", "dialyzer"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind ex_chess", "esbuild ex_chess"],
@@ -89,7 +91,8 @@ defmodule ExChess.MixProject do
         "esbuild ex_chess --minify",
         "phx.digest"
       ],
-      deploy: ["cmd fly scale count 0 --region cdg,iad,syd --max-per-region 1"]
+      "deploy.start": ["cmd fly scale count 3 --yes --region cdg,iad,syd --max-per-region 1"],
+      "deploy.stop": ["cmd fly scale count 0 --yes --region cdg,iad,syd --max-per-region 1"]
     ]
   end
 end

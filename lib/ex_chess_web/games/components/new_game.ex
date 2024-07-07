@@ -92,7 +92,7 @@ defmodule ExChessWeb.Live.Games.Components.NewGame do
 
         socket
         |> put_flash(:info, "Game created successfully")
-        |> push_navigate(to: "/game/#{game.id}")
+        |> push_navigate(to: "/games/#{game.id}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         assign(socket, :form, to_form(changeset))

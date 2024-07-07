@@ -10,7 +10,7 @@ defmodule ExChess.Games.Supervisor do
   @impl true
   def init(_args) do
     children = [
-      {Registry, keys: :unique, name: ExChess.GameRegistry},
+      {Horde.Registry, keys: :unique, name: ExChess.GameRegistry},
       ExChess.Games.GameSupervisor
     ]
 

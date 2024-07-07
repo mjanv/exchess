@@ -51,8 +51,8 @@ defmodule ExChessWeb.Components.ChessComponents do
   def tile(assigns) do
     ~H"""
     <button style={"background-color: #{tile_color({@x, @y}, @selected)};"} 
-            class="aspect-square flex overflow-clip" phx-click="select" 
-            phx-value-x={@x} phx-value-y={@y}>
+            class="aspect-square flex overflow-clip" 
+            phx-click="select" phx-value-x={@x} phx-value-y={@y}>
       <div class="relative w-full h-full flex justify-center items-center">
         <div class="absolute w-full h-full" style={"background-color: none;"}></div>
       </div>

@@ -1,8 +1,6 @@
 defmodule ExChess.Release do
-  @moduledoc """
-  Used for executing DB release tasks when run in production without Mix
-  installed.
-  """
+  @moduledoc false
+
   @app :ex_chess
 
   def migrate do

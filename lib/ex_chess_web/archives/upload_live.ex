@@ -1,4 +1,4 @@
-defmodule ExChessWeb.Live.Archives.UploadLive do
+defmodule ExChessWeb.Archives.Live.UploadLive do
   @moduledoc false
 
   use ExChessWeb, :live_view

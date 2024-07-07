@@ -12,7 +12,7 @@ defmodule ExChess.Games.GameServer do
     GenServer.start_link(__MODULE__, args, name: via(args[:id]))
   end
 
-  def via(id), do: {:via, Registry, {ExChess.GameRegistry, id}}
+  def via(id), do: {:via, Horde.Registry, {ExChess.GameRegistry, id}}
 
   @impl true
   def init(id: id, time: time) do

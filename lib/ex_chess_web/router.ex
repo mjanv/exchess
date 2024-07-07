@@ -1,6 +1,7 @@
 defmodule ExChessWeb.Router do
   use ExChessWeb, :router
 
+  alias ExChessWeb.Live.Accounts.UserAuth
   import ExChessWeb.Live.Accounts.UserAuth
 
   pipeline :browser do
@@ -36,16 +37,37 @@ defmodule ExChessWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{ExChessWeb.Live.Accounts.UserAuth, :ensure_authenticated}] do
-      live("/home", Live.Games.HomeLive, :index)
-      live("/game/new", Live.Games.HomeLive, :new)
-      live("/game/:id", Live.Games.GameLive)
-
-      live("/archives/games", Live.Archives.GamesLive, :index)
-      live("/archives/upload", Live.Archives.UploadLive, :new)
+      live("/home", Games.Live.HomeLive, :index)
 
       live("/users/settings", Live.Accounts.UserSettingsLive, :edit)
       live("/users/settings/confirm_email/:token", Live.Accounts.UserSettingsLive, :confirm_email)
     end
+  end
+
+  scope "/games", ExChessWeb.Games do
+    pipe_through(:browser)
+
+    live_session :default, on_mount: [{UserAuth, :ensure_authenticated}] do
+      live("/new", Live.HomeLive, :new)
+      live("/:id", Live.GameLive)
+    end
+  end
+
+  scope "/archives", ExChessWeb.Archives do
+    pipe_through(:browser)
+
+    live_session :archives, on_mount: [{UserAuth, :ensure_authenticated}] do
+      live("/games", Live.GamesLive, :index)
+      live("/upload", Live.UploadLive, :new)
+    end
+  end
+
+  scope "/demos", ExChessWeb.Demos do
+    pipe_through(:browser)
+
+    get("/tiles", DemoController, :tiles)
+    get("/pieces", DemoController, :pieces)
+    get("/chessboard", DemoController, :chessboard)
   end
 
   scope "/", ExChessWeb do

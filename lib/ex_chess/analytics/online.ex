@@ -34,16 +34,16 @@ defmodule ExChess.Analytics.Online do
       |> :rpc.multicall(:list, ["users"])
       |> elem(0)
       |> Enum.map(&map_size/1)
-      |> Enum.sum()
+      |> Enum.max()
 
     online_games =
-      DynamicSupervisor
+      Horde.DynamicSupervisor
       |> :rpc.multicall(:count_children, [Games.GameSupervisor])
       |> elem(0)
       |> Enum.map(& &1.active)
       |> Enum.sum()
 
-    online_nodes = 1 + length(Node.list(:hidden))
+    online_nodes = 1 + length(Node.list())
 
     new_stats = %{
       online_users: online_users,
@@ -52,7 +52,7 @@ defmodule ExChess.Analytics.Online do
     }
 
     if new_stats != stats do
-      Phoenix.PubSub.broadcast(ExChess.PubSub, "analytics:online", {:stats, new_stats})
+      Phoenix.PubSub.local_broadcast(ExChess.PubSub, "analytics:online", {:stats, new_stats})
     end
 
     {:noreply, new_stats}

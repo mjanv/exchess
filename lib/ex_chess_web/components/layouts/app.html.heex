@@ -8,13 +8,13 @@
       <img src={~p"/images/bK.svg"} width="36" />
       <img src={~p"/images/wQ.svg"} width="36" />
       <p class="bg-black text-white rounded-full px-3 font-medium leading-6">
-        <%=  %>
+        <%= %>
       </p>
     </div>
     <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
       <%= if @current_user do %>
         <.link href={~p"/users/settings"} class="hover:text-zinc-700">
-          <%= @current_user.email %> (<%= Atom.to_string(node()) %>)
+          <%= @current_user.email %> (<%= System.get_env("FLY_REGION", "?") %> - <%= Atom.to_string(node()) %>)
         </.link>
         <.link
         href={~p"/users/log_out"}

@@ -1,4 +1,4 @@
-defmodule ExChessWeb.Live.Games.GameLive do
+defmodule ExChessWeb.Games.Live.GameLive do
   @moduledoc false
 
   use ExChessWeb, :live_view

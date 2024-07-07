@@ -5,11 +5,12 @@ defmodule ExChess do
 
   @impl true
   def start(_type, _args) do
+    topologies = Application.get_env(:libcluster, :topologies)
+
     children = [
       ExChess.Supervisor,
       ExChessWeb.Supervisor,
-      {Cluster.Supervisor,
-       [Application.get_env(:libcluster, :topologies), [name: ExChess.ClusterSupervisor]]}
+      {Cluster.Supervisor, [topologies, [name: ExChess.ClusterSupervisor]]}
     ]
 
     Supervisor.start_link(children, strategy: :one_for_one, name: ExChess.Application)

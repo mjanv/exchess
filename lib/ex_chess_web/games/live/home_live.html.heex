@@ -20,7 +20,7 @@
     <.header>
       <%= length(@games) %> active games
       <:actions>
-        <.link patch={~p"/game/new"}><.button>New Game</.button></.link>
+        <.link patch={~p"/games/new"}><.button>New Game</.button></.link>
       </:actions>
     </.header>
   </div>
@@ -28,7 +28,7 @@
     <.table id="games" rows={@games}>
       <:col :let={game} label="id"><%= game.id %></:col>
       <:action :let={game}>
-        <.link href={~p"/game/#{game}"}>See game</.link>
+        <.link href={~p"/games/#{game}"}>See game</.link>
       </:action>
     </.table>
   </div>

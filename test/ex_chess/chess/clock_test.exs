@@ -3,7 +3,7 @@ defmodule ExChess.Chess.ClockTest do
 
   alias ExChess.Chess.Clock
 
-  test "a clock ?" do
+  test "a clock removes remaining time from players when ticks happens" do
     clock =
       Clock.new(500, 10_000)
       |> Clock.start()
@@ -14,13 +14,12 @@ defmodule ExChess.Chess.ClockTest do
       |> Clock.tick()
       |> Clock.tick()
 
-    %Clock{status: :started, turn: :black, remaining: %{black: 8500, white: 9000}} =
-      clock
+    %Clock{status: :started, turn: :black, remaining: remaining} = clock
 
-    assert true
+    assert remaining == %{black: 8500, white: 9000}
   end
 
-  test "a clock ??" do
+  test "a clock is stopped when the white player has no remaining time" do
     clock =
       Clock.new(1_000, 5_000)
       |> Clock.start()
@@ -31,13 +30,12 @@ defmodule ExChess.Chess.ClockTest do
       |> Clock.tick()
       |> Clock.tick()
 
-    %Clock{status: :stopped, turn: :white, remaining: %{black: 5_000, white: 0}} =
-      clock
+    %Clock{status: :stopped, turn: :white, remaining: remaining} = clock
 
-    assert true
+    assert remaining == %{black: 5_000, white: 0}
   end
 
-  test "a clock ???" do
+  test "a clock is stopped when the black player has no remaining time" do
     clock =
       Clock.new(1_000, 5_000)
       |> Clock.start()
@@ -49,9 +47,8 @@ defmodule ExChess.Chess.ClockTest do
       |> Clock.tick()
       |> Clock.tick()
 
-    %Clock{status: :stopped, turn: :black, remaining: %{black: 0, white: 5_000}} =
-      clock
+    %Clock{status: :stopped, turn: :black, remaining: remaining} = clock
 
-    assert true
+    assert remaining == %{black: 0, white: 5_000}
   end
 end
