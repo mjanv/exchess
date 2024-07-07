@@ -15,6 +15,11 @@ defmodule ExChessWeb.Endpoint do
     longpoll: [connect_info: [session: @session_options]]
   )
 
+  socket("/socket", ExChessWeb.UserSocket,
+    websocket: true,
+    longpoll: false
+  )
+
   plug(Plug.Static,
     at: "/",
     from: :ex_chess,

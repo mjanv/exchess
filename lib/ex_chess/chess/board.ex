@@ -10,7 +10,9 @@ defmodule ExChess.Chess.Board do
 
   defstruct [:turn, :pieces]
 
-  def new, do: %__MODULE__{turn: :white, pieces: %{}}
+  def new do
+    %__MODULE__{turn: :white, pieces: %{}}
+  end
 
   def at(%__MODULE__{pieces: pieces}, x) when is_atom(x), do: Map.get(pieces, x)
   def at(%__MODULE__{pieces: pieces}, %Position{} = x), do: Map.get(pieces, Position.as_atom(x))

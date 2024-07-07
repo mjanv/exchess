@@ -10,10 +10,12 @@ defmodule ExChessWeb.Components.ChessComponents do
       <div class="relative max-w-xl aspect-square w-full rounded-lg overflow-hidden border-black border-2">
           <div class="absolute grid grid-cols-8 grid-rows-8 w-full h-full" style="font-family: Arial;">
               <.piece :for={{position, piece} <- Enum.map(@pieces, & &1)} 
-                      position={Position.from_atom(position)} piece={piece} />
+                      position={Position.from_atom(position)} 
+                      piece={piece} />
           </div>
           <div class="absolute grid grid-cols-8 grid-rows-8 w-full h-full" style="font-family: Arial;">
-              <.highlight :for={move <- @moves} position={move.to} />
+              <.highlight :for={move <- @moves} 
+                          position={move.to} />
           </div>
           <div class="grid grid-cols-8 grid-rows-8 w-full h-full">
               <%= for y <- 1..8 do %>
@@ -29,6 +31,7 @@ defmodule ExChessWeb.Components.ChessComponents do
   def piece(assigns) do
     ~H"""
     <div
+      id={"piece-#{@position.column}-#{@position.rank}"}
       style={"left: #{(((@position.column - 1) / 8)) * 100}%; top: #{(((8 - @position.rank) / 8)) * 100}%; width: 12.5%; height: 12.5%;"}
       class="absolute aspect-square flex overflow-clip transition-all pointer-events-none"
     >
@@ -50,7 +53,8 @@ defmodule ExChessWeb.Components.ChessComponents do
 
   def tile(assigns) do
     ~H"""
-    <button style={"background-color: #{tile_color({@x, @y}, @selected)};"} 
+    <button id={"tile-#{@x}-#{@y}"}
+            style={"background-color: #{tile_color({@x, @y}, @selected)};"} 
             class="aspect-square flex overflow-clip" 
             phx-click="select" phx-value-x={@x} phx-value-y={@y}>
       <div class="relative w-full h-full flex justify-center items-center">

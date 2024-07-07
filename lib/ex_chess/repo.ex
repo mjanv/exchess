@@ -17,6 +17,7 @@ defmodule ExChess.Repo do
 
   def rollback(repo, version) do
     Application.load(@app)
+
     {:ok, _, _} = Ecto.Migrator.with_repo(repo, &Ecto.Migrator.run(&1, :down, to: version))
   end
 end
