@@ -11,7 +11,7 @@ defmodule ExChessWeb.Supervisor do
   def init(_args) do
     children = [
       ExChessWeb.Telemetry,
-      {DNSCluster, query: Application.get_env(:ex_chess, :dns_cluster_query) || :ignore},
+      {DNSCluster, query: Application.get_env(:ex_chess, :dns_cluster_query, :ignore)},
       {Phoenix.PubSub, name: ExChess.PubSub},
       ExChessWeb.Presence,
       ExChessWeb.Endpoint

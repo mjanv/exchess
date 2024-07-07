@@ -82,7 +82,7 @@ defmodule ExChessWeb do
   defp html_helpers do
     quote do
       import Phoenix.HTML
-      import ExChessWeb.CoreComponents
+      import ExChessWeb.Components.CoreComponents
       import ExChessWeb.Components.ChessComponents
       import ExChessWeb.Gettext
 

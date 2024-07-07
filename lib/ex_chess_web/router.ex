@@ -1,8 +1,8 @@
 defmodule ExChessWeb.Router do
   use ExChessWeb, :router
 
-  alias ExChessWeb.Live.Accounts.UserAuth
-  import ExChessWeb.Live.Accounts.UserAuth
+  alias ExChessWeb.Accounts.Live.UserAuth
+  import ExChessWeb.Accounts.Live.UserAuth
 
   pipeline :browser do
     plug(:accepts, ["html"])
@@ -18,36 +18,59 @@ defmodule ExChessWeb.Router do
     plug(:accepts, ["json"])
   end
 
-  scope "/", ExChessWeb do
-    pipe_through([:browser, :redirect_if_user_is_authenticated])
+  scope "/", ExChessWeb.Home do
+    pipe_through(:browser)
 
-    live_session :redirect_if_user_is_authenticated,
-      on_mount: [{ExChessWeb.Live.Accounts.UserAuth, :redirect_if_user_is_authenticated}] do
-      live("/users/register", Live.Accounts.UserRegistrationLive, :new)
-      live("/users/log_in", Live.Accounts.UserLoginLive, :new)
-      live("/users/reset_password", Live.Accounts.UserForgotPasswordLive, :new)
-      live("/users/reset_password/:token", Live.Accounts.UserResetPasswordLive, :edit)
-    end
-
-    post("/users/log_in", UserSessionController, :create)
+    get("/", Controllers.HomepageController, :home)
   end
 
   scope "/", ExChessWeb do
     pipe_through([:browser, :require_authenticated_user])
 
-    live_session :require_authenticated_user,
-      on_mount: [{ExChessWeb.Live.Accounts.UserAuth, :ensure_authenticated}] do
+    live_session :homepages, on_mount: [{UserAuth, :ensure_authenticated}] do
       live("/home", Games.Live.HomeLive, :index)
-
-      live("/users/settings", Live.Accounts.UserSettingsLive, :edit)
-      live("/users/settings/confirm_email/:token", Live.Accounts.UserSettingsLive, :confirm_email)
     end
+  end
+
+  scope "/users", ExChessWeb.Accounts do
+    pipe_through([:browser, :redirect_if_user_is_authenticated])
+
+    live_session :redirect_if_user_is_authenticated,
+      on_mount: [{UserAuth, :redirect_if_user_is_authenticated}] do
+      live("/register", Live.UserRegistrationLive, :new)
+      live("/log_in", Live.UserLoginLive, :new)
+      live("/reset_password", Live.UserForgotPasswordLive, :new)
+      live("/reset_password/:token", Live.UserResetPasswordLive, :edit)
+    end
+
+    post("/log_in", Controllers.UserSessionController, :create)
+  end
+
+  scope "/users", ExChessWeb do
+    pipe_through([:browser, :require_authenticated_user])
+
+    live_session :require_authenticated_user,
+      on_mount: [{UserAuth, :ensure_authenticated}] do
+      live("/settings", Accounts.Live.UserSettingsLive, :edit)
+      live("/settings/confirm_email/:token", Accounts.Live.UserSettingsLive, :confirm_email)
+    end
+  end
+
+  scope "/users", ExChessWeb.Accounts do
+    pipe_through([:browser])
+
+    live_session :current_user, on_mount: [{UserAuth, :mount_current_user}] do
+      live("/confirm/:token", Live.UserConfirmationLive, :edit)
+      live("/confirm", Live.UserConfirmationInstructionsLive, :new)
+    end
+
+    delete("/log_out", Controllers.UserSessionController, :delete)
   end
 
   scope "/games", ExChessWeb.Games do
     pipe_through(:browser)
 
-    live_session :default, on_mount: [{UserAuth, :ensure_authenticated}] do
+    live_session :games, on_mount: [{UserAuth, :ensure_authenticated}] do
       live("/new", Live.HomeLive, :new)
       live("/:id", Live.GameLive)
     end
@@ -68,19 +91,6 @@ defmodule ExChessWeb.Router do
     get("/tiles", DemoController, :tiles)
     get("/pieces", DemoController, :pieces)
     get("/chessboard", DemoController, :chessboard)
-  end
-
-  scope "/", ExChessWeb do
-    pipe_through([:browser])
-
-    get("/", PageController, :home)
-    delete("/users/log_out", UserSessionController, :delete)
-
-    live_session :current_user,
-      on_mount: [{ExChessWeb.Live.Accounts.UserAuth, :mount_current_user}] do
-      live("/users/confirm/:token", Live.Accounts.UserConfirmationLive, :edit)
-      live("/users/confirm", Live.Accounts.UserConfirmationInstructionsLive, :new)
-    end
   end
 
   if Application.compile_env(:ex_chess, :dev_routes) do

@@ -8,7 +8,10 @@ config :ex_chess, ExChessWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Phoenix.Endpoint.Cowboy2Adapter,
   render_errors: [
-    formats: [html: ExChessWeb.ErrorHTML, json: ExChessWeb.ErrorJSON],
+    formats: [
+      html: ExChessWeb.Home.Controllers.ErrorHTML,
+      json: ExChessWeb.Home.Controllers.ErrorJSON
+    ],
     layout: false
   ],
   pubsub_server: ExChess.PubSub,

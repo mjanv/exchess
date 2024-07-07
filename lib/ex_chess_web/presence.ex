@@ -6,8 +6,7 @@ defmodule ExChessWeb.Presence do
     pubsub_server: ExChess.PubSub
 
   def user(_socket, %{id: id}) do
-    {:ok, _} =
-      __MODULE__.track(self(), "users", Integer.to_string(id), metadata())
+    __MODULE__.track(self(), "users", Integer.to_string(id), metadata())
   end
 
   def game(%{id: id}, %{id: user_id}) do

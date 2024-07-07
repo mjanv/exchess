@@ -1,4 +1,4 @@
-defmodule ExChessWeb.CoreComponents do
+defmodule ExChessWeb.Components.CoreComponents do
   @moduledoc """
   Provides core UI components.
 
