@@ -35,9 +35,19 @@ defmodule ExChess.Chess.Board do
       pieces
       |> Map.pop!(Position.as_atom(from))
       |> elem(1)
-      |> Map.put(Position.as_atom(to), piece)
-      |> then(fn pieces -> Map.put(board, :pieces, pieces) end)
-      |> turn()
+      |> then(fn pieces ->
+        case Map.get(pieces, Position.as_atom(to)) do
+          %Piece{color: color} when color == piece.color ->
+            pieces = Map.put(pieces, Position.as_atom(from), piece)
+            Map.put(board, :pieces, pieces)
+
+          _ ->
+            pieces = Map.put(pieces, Position.as_atom(to), piece)
+
+            Map.put(board, :pieces, pieces)
+            |> turn()
+        end
+      end)
     else
       board
     end

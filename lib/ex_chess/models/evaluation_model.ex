@@ -52,7 +52,7 @@ defmodule ExChess.Models.EvaluationModel do
 
   def serving(batch_size \\ 20) do
     Nx.Serving.new(
-      fn ->
+      fn _ ->
         params = params()
 
         predict =
@@ -68,8 +68,9 @@ defmodule ExChess.Models.EvaluationModel do
           )
 
         fn inputs ->
-          inputs = Nx.Batch.pad(inputs, batch_size - inputs.size)
-          predict.(params, inputs)
+          inputs
+          |> Nx.Batch.pad(batch_size - inputs.size)
+          |> then(&predict.(params, &1))
         end
       end,
       batch_size: batch_size

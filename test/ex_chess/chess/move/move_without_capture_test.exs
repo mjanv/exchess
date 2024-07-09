@@ -110,8 +110,11 @@ defmodule ExChess.Chess.Move.MoveWithoutCaptureTest do
         position: position,
         destinations: destinations
       } do
-        %Board{turn: piece.color, pieces: %{position => piece}}
-        |> Move.possible_moves(Position.from_atom(position))
+        board = %Board{turn: piece.color, pieces: %{position => piece}}
+
+        moves = Move.possible_moves(board, Position.from_atom(position))
+
+        moves
         |> tap(fn moves -> assert length(moves) == length(destinations) end)
         |> Enum.each(fn %Move{} = move ->
           assert move.piece == piece

@@ -59,4 +59,43 @@ _|_|_|_|_|_|_|_
 
     assert board == %Board{turn: :white, pieces: %{:e2 => pawn}}
   end
+
+  test "A piece can be captured with a piece of opposite color" do
+    white_pawn = %Piece{color: :white, role: :pawn}
+    black_pawn = %Piece{color: :black, role: :pawn}
+
+    board = %Board{
+      turn: :white,
+      pieces: %{
+        :e2 => white_pawn,
+        :d3 => black_pawn
+      }
+    }
+
+    board = Board.move(board, Move.new(white_pawn, :e2, :d3))
+
+    assert board == %Board{turn: :black, pieces: %{:d3 => white_pawn}}
+  end
+
+  test "A piece cannot be captured with a piece of same color" do
+    white_pawn = %Piece{color: :white, role: :pawn}
+
+    board = %Board{
+      turn: :white,
+      pieces: %{
+        :e2 => white_pawn,
+        :d3 => white_pawn
+      }
+    }
+
+    board = Board.move(board, Move.new(white_pawn, :e2, :d3))
+
+    assert board == %Board{
+             turn: :white,
+             pieces: %{
+               :e2 => white_pawn,
+               :d3 => white_pawn
+             }
+           }
+  end
 end

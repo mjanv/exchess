@@ -33,14 +33,18 @@ defmodule ExChess.Chess.Move do
         color: :white,
         role: :pawn
       }) do
-    1..if(rank == 2, do: 2, else: 1) |> Enum.map(&{0, &1}) |> check_route(b, s)
+    a = 1..if(rank == 2, do: 2, else: 1) |> Enum.map(&{0, &1}) |> check_route(b, s)
+    # b = check_jumps([{1, 1}, {-1, 1}], b, s)
+    a
   end
 
   def do_possible_moves(%Board{} = b, %Position{rank: rank} = s, %Piece{
         color: :black,
         role: :pawn
       }) do
-    1..if(rank == 7, do: 2, else: 1) |> Enum.map(&{0, -&1}) |> check_route(b, s)
+    a = 1..if(rank == 7, do: 2, else: 1) |> Enum.map(&{0, -&1}) |> check_route(b, s)
+    # b = check_jumps([{1, -1}, {-1, -1}], b, s)
+    a
   end
 
   def do_possible_moves(%Board{} = b, %Position{} = s, %Piece{role: :rook}) do
