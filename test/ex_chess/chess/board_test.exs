@@ -6,7 +6,19 @@ defmodule ExChess.Chess.BoardTest do
   import ExUnit.CaptureLog
   require Logger
 
-  alias ExChess.Chess.{Board, Move, Piece, Position}
+  alias ExChess.Chess.{Board, History, Move, Piece, Position}
+
+  test "A board can be empty" do
+    board = Board.new()
+
+    assert board == %Board{
+             turn: :white,
+             status: :active,
+             captures: [],
+             history: %History{moves: []},
+             pieces: %{}
+           }
+  end
 
   test "A board can be represented as a string" do
     board = "♜|♞|♝|♛|♚|♝|♞|♜
@@ -49,13 +61,15 @@ _|_|_|_|_|_|_|_
              status: :active,
              pieces: %{:e4 => pawn},
              captures: [],
-             history: [
-               %Move{
-                 piece: %Piece{color: :white, role: :pawn},
-                 from: %Position{column: 5, rank: 2},
-                 to: %Position{column: 5, rank: 4}
-               }
-             ]
+             history: %History{
+               moves: [
+                 %Move{
+                   piece: %Piece{color: :white, role: :pawn},
+                   from: %Position{column: 5, rank: 2},
+                   to: %Position{column: 5, rank: 4}
+                 }
+               ]
+             }
            }
   end
 
@@ -100,13 +114,15 @@ _|_|_|_|_|_|_|_
              status: :active,
              pieces: %{:d3 => white_pawn},
              captures: [black_pawn],
-             history: [
-               %Move{
-                 piece: %Piece{color: :white, role: :pawn},
-                 from: %Position{column: 5, rank: 2},
-                 to: %Position{column: 4, rank: 3}
-               }
-             ]
+             history: %History{
+               moves: [
+                 %Move{
+                   piece: %Piece{color: :white, role: :pawn},
+                   from: %Position{column: 5, rank: 2},
+                   to: %Position{column: 4, rank: 3}
+                 }
+               ]
+             }
            }
   end
 

@@ -1,7 +1,7 @@
 defmodule ExChess.Chess.Board do
   @moduledoc false
 
-  alias ExChess.Chess.{Move, Piece, Position}
+  alias ExChess.Chess.{History, Move, Piece, Position}
 
   @type color() :: :white | :black
   @type status() :: :active | :check | :checkmate | :draw | :pat
@@ -11,7 +11,7 @@ defmodule ExChess.Chess.Board do
           status: status(),
           pieces: %{atom() => Piece.t()},
           captures: [Piece.t()],
-          history: [Move.t()]
+          history: History.t()
         }
 
   defstruct [:turn, :status, :pieces, :captures, :history]
@@ -22,7 +22,7 @@ defmodule ExChess.Chess.Board do
       status: :active,
       pieces: pieces,
       captures: [],
-      history: []
+      history: %History{moves: []}
     }
   end
 
@@ -64,7 +64,7 @@ defmodule ExChess.Chess.Board do
             pieces = Map.put(pieces, Position.as_atom(to), piece)
 
             Map.put(board, :pieces, pieces)
-            |> Map.put(:history, history ++ [move])
+            |> Map.put(:history, History.append(history, move))
             |> Map.put(:captures, (captures ++ [old]) |> Enum.reject(&is_nil/1))
             |> turn()
         end
