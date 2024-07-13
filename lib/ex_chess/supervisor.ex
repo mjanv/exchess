@@ -10,14 +10,6 @@ defmodule ExChess.Supervisor do
   @impl true
   def init(_args) do
     children = [
-      {
-        FLAME.Pool,
-        name: ExChess.FlameRunner,
-        min: 0,
-        max: 10,
-        max_concurrency: 5,
-        idle_shutdown_after: 15_000
-      },
       ExChess.Repo,
       ExChess.Analytics.Supervisor,
       ExChess.Archives.Supervisor,

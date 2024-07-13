@@ -51,8 +51,17 @@ defmodule ExChessWeb.Games.Live.GameLive do
   end
 
   def handle_event(
+        "resign",
+        _,
+        %{assigns: %{game: game}} = socket
+      ) do
+    GameServer.cast(game, {:resign, :white})
+    {:noreply, socket}
+  end
+
+  def handle_event(
         "select",
-        %{"value" => "", "x" => x, "y" => y},
+        %{"x" => x, "y" => y},
         %{assigns: %{selected: selected, game: game, moves: moves}} = socket
       ) do
     position = %Position{column: String.to_integer(x), rank: String.to_integer(y)}

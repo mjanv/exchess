@@ -21,11 +21,15 @@
       <% end %>
       <div class="flex w-full flex-none gap-x-4 border-t border-black px-6 pt-6">
         <span class="inline-flex items-center rounded-md bg-gray-800 px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-black/10">
-          <%= @game.clock.status %>
+          <%= inspect(ExChess.Chess.Board.capture_values(@game.board)) %>
+        </span>
+        <span class="inline-flex items-center rounded-md bg-gray-800 px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-black/10">
+          <%= inspect(@game.status) %>
         </span>
         <span class="inline-flex items-center rounded-md bg-gray-800 px-2 py-1 text-xs font-medium text-white ring-1 ring-inset ring-black/10">
           Evaluation: <%= Float.ceil(@evaluation, 5) %>
         </span>
+        <.button phx-click="resign" class="ml-2">Resign</.button>
       </div>
       <%= if @game.board.turn == :white do %>
         <div class="mt-3 border-t border-black bg-gray-800 px-6 py-6">

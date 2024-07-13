@@ -48,6 +48,6 @@ config :logger, :console,
 
 config :phoenix, :json_library, Jason
 
-config :ex_chess, ExChess.Mailer, adapter: Swoosh.Adapters.Local
+config :ex_chess, ExChess.Accounts.Mailer, adapter: Swoosh.Adapters.Local
 
 import_config "#{config_env()}.exs"

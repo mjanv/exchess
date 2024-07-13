@@ -3,9 +3,7 @@ defmodule ExChess.Games.GameServer do
 
   use GenServer, restart: :transient
 
-  require Logger
-
-  alias ExChess.Chess.{Board, Clock, Game, Move, Notations}
+  alias ExChess.Chess.{Board, Clock, Game, Move}
   alias ExChess.Games.GameRecord
 
   def start_link(args) do
@@ -18,12 +16,11 @@ defmodule ExChess.Games.GameServer do
   def init(id: id, time: time) do
     %Game{
       id: id,
-      board: Notations.Fen.start_board(),
+      board: ExChess.Chess.start_board(),
       clock: Clock.new(1_000, time)
     }
-    |> tap(fn %{id: id} -> Logger.info("[#{__MODULE__}] Starting game server #{id}") end)
+    |> tap(fn game -> broadcast({:game_started, game.id}) end)
     |> tap(fn game -> broadcast(game, {:game, game}) end)
-    |> tap(fn game -> broadcast({:game_started, game}) end)
     |> then(fn game -> {:ok, game} end)
   end
 
@@ -55,11 +52,15 @@ defmodule ExChess.Games.GameServer do
   end
 
   @impl true
-  def handle_info(:tick, %{clock: %Clock{status: :stopped} = clock} = game) do
+  def handle_cast({:resign, color}, game) do
     game
-    |> Map.put(:clock, clock)
-    |> tap(fn game -> broadcast(game, {:game, game}) end)
-    |> tap(fn game -> broadcast({:game_stopped, game}) end)
+    |> Game.resign(color)
+    |> then(fn game -> {:stop, :normal, game} end)
+  end
+
+  @impl true
+  def handle_info(:tick, %{clock: %Clock{status: :stopped}} = game) do
+    game
     |> then(fn game -> {:stop, :normal, game} end)
   end
 
@@ -72,13 +73,16 @@ defmodule ExChess.Games.GameServer do
   end
 
   @impl true
-  def terminate(_reason, %{id: id} = game) do
+  def terminate(_reason, %{id: id, clock: clock} = game) do
+    Clock.stop(clock)
+
     id
     |> GameRecord.get_game!()
-    |> GameRecord.update_game(%{result: :white})
+    |> GameRecord.update_game(game)
 
     game
-    |> tap(fn game -> broadcast({:game_stopped, game}) end)
+    |> tap(fn game -> broadcast(game, {:game, game}) end)
+    |> tap(fn game -> broadcast({:game_stopped, game.id}) end)
 
     :ok
   end

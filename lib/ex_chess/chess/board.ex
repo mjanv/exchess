@@ -3,19 +3,31 @@ defmodule ExChess.Chess.Board do
 
   alias ExChess.Chess.{Move, Piece, Position}
 
+  @type color() :: :white | :black
+  @type status() :: :active | :check | :checkmate | :draw | :pat
+
   @type t() :: %__MODULE__{
-          turn: :white | :black,
-          pieces: %{atom() => Piece.t()}
+          turn: color(),
+          status: status(),
+          pieces: %{atom() => Piece.t()},
+          captures: [Piece.t()],
+          history: [Move.t()]
         }
 
-  defstruct [:turn, :pieces]
+  defstruct [:turn, :status, :pieces, :captures, :history]
 
-  def new do
-    %__MODULE__{turn: :white, pieces: %{}}
+  def new(pieces \\ %{}, turn \\ :white) do
+    %__MODULE__{
+      turn: turn,
+      status: :active,
+      pieces: pieces,
+      captures: [],
+      history: []
+    }
   end
 
-  def at(%__MODULE__{pieces: pieces}, x) when is_atom(x), do: Map.get(pieces, x)
-  def at(%__MODULE__{pieces: pieces}, %Position{} = x), do: Map.get(pieces, Position.as_atom(x))
+  def at(%__MODULE__{pieces: pieces}, p) when is_atom(p), do: Map.get(pieces, p)
+  def at(%__MODULE__{} = board, %Position{} = p), do: at(board, Position.as_atom(p))
 
   def all_positions(%__MODULE__{pieces: pieces}, {role, color}) do
     pieces
@@ -23,28 +35,37 @@ defmodule ExChess.Chess.Board do
     |> Enum.map(fn {position, _} -> Position.from_atom(position) end)
   end
 
+  def capture_values(%__MODULE__{captures: captures}) do
+    captures
+    |> Enum.group_by(& &1.color, &Piece.value/1)
+    |> Enum.map(fn {k, v} -> {k, Enum.sum(v)} end)
+    |> Enum.into(%{})
+  end
+
   def place(%__MODULE__{pieces: pieces} = board, %Position{} = position, %Piece{} = piece) do
     %{board | pieces: Map.put(pieces, Position.as_atom(position), piece)}
   end
 
   def move(
-        %__MODULE__{turn: turn, pieces: pieces} = board,
-        %Move{piece: %Piece{color: turn} = piece, from: from, to: to}
+        %__MODULE__{turn: turn, pieces: pieces, captures: captures, history: history} = board,
+        %Move{piece: %Piece{color: turn} = piece, from: from, to: to} = move
       ) do
     if Map.get(pieces, Position.as_atom(from)) == piece do
       pieces
       |> Map.pop!(Position.as_atom(from))
-      |> elem(1)
-      |> then(fn pieces ->
+      |> then(fn {_, pieces} ->
         case Map.get(pieces, Position.as_atom(to)) do
           %Piece{color: color} when color == piece.color ->
             pieces = Map.put(pieces, Position.as_atom(from), piece)
             Map.put(board, :pieces, pieces)
 
           _ ->
+            {old, pieces} = Map.pop(pieces, Position.as_atom(to))
             pieces = Map.put(pieces, Position.as_atom(to), piece)
 
             Map.put(board, :pieces, pieces)
+            |> Map.put(:history, history ++ [move])
+            |> Map.put(:captures, (captures ++ [old]) |> Enum.reject(&is_nil/1))
             |> turn()
         end
       end)

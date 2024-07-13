@@ -13,6 +13,14 @@ defmodule ExChess.Models.Supervisor do
   def init(_args) do
     children = [
       {
+        FLAME.Pool,
+        name: ExChess.Models.FlameRunner,
+        min: 0,
+        max: 10,
+        max_concurrency: 5,
+        idle_shutdown_after: 15_000
+      },
+      {
         Nx.Serving,
         serving: EvaluationModel.serving(),
         name: ExChess.Models.EvaluationServing,

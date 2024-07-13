@@ -3,7 +3,7 @@ defmodule ExChess.Accounts.UserNotifier do
 
   import Swoosh.Email
 
-  alias ExChess.Mailer
+  alias ExChess.Accounts.Mailer
 
   # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do

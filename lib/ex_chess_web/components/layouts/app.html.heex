@@ -14,7 +14,7 @@
     <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
       <%= if @current_user do %>
         <.link href={~p"/users/settings"} class="hover:text-zinc-700">
-          <%= @current_user.email %> (<%= System.get_env("FLY_REGION", "?") %> - <%= Atom.to_string(node()) %>)
+          <%= @current_user.email %> (<%= Fly.region() %> - <%= Fly.name() %>)
         </.link>
         <.link
         href={~p"/users/log_out"}

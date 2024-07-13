@@ -3,7 +3,7 @@ defmodule ExChess.Chess.GameTest do
 
   alias ExChess.Chess.{Game, Notations, Player}
 
-  test "?" do
+  test "A new game can be created" do
     players = [
       %Player{id: "1", name: "A", color: :white},
       %Player{id: "2", name: "B", color: :black}
@@ -25,8 +25,19 @@ defmodule ExChess.Chess.GameTest do
                interval: 1000,
                turn: :white,
                remaining: %{black: 120_000, white: 120_000}
-             },
-             history: []
+             }
            }
+  end
+
+  test "A game can be resigned" do
+    players = [
+      %Player{id: "1", name: "A", color: :white},
+      %Player{id: "2", name: "B", color: :black}
+    ]
+
+    game = Game.new(nil, players)
+    game = Game.resign(game, :white)
+
+    assert game.status == {:win, :white}
   end
 end

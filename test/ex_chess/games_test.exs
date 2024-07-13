@@ -1,6 +1,7 @@
 defmodule ExChess.GamesTest do
   use ExChess.DataCase
 
+  alias ExChess.Chess
   alias ExChess.Games
 
   describe "game" do
@@ -43,6 +44,15 @@ defmodule ExChess.GamesTest do
       game = game_fixture()
       assert {:error, %Ecto.Changeset{}} = Games.update_game(game, @invalid_attrs)
       assert game == Games.get_game!(game.id)
+    end
+
+    test "update_game/2 with a Game updates the game" do
+      record = game_fixture()
+
+      game = %Chess.Game{status: {:win, :white}}
+
+      assert {:ok, %Game{} = record} = Games.update_game(record, game)
+      assert record.result == :white
     end
 
     test "delete_game/1 deletes the game" do

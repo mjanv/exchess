@@ -28,7 +28,7 @@ defmodule ExChess.Chess.Clock do
   def start(%__MODULE__{} = clock), do: clock
 
   def stop(%__MODULE__{timer: timer} = clock) do
-    {:ok, _} = :timer.cancel(timer)
+    :timer.cancel(timer)
     %{clock | status: :stopped, timer: nil}
   end
 

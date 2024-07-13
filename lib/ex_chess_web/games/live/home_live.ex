@@ -43,14 +43,14 @@ defmodule ExChessWeb.Games.Live.HomeLive do
   end
 
   @impl true
-  def handle_info({:game_started, _game}, socket) do
+  def handle_info({:game_started, _id}, socket) do
     socket
     |> assign(:games, Games.GameSupervisor.children())
     |> then(fn socket -> {:noreply, socket} end)
   end
 
   @impl true
-  def handle_info({:game_stopped, _game}, socket) do
+  def handle_info({:game_stopped, _id}, socket) do
     socket
     |> then(fn socket -> {:noreply, socket} end)
   end

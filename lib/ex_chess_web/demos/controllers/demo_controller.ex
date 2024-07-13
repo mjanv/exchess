@@ -1,7 +1,6 @@
 defmodule ExChessWeb.Demos.DemoController do
   use ExChessWeb, :controller
 
-  alias ExChess.Chess.Notations.Fen
   alias ExChess.Chess.{Piece, Position}
 
   def tiles(conn, _params) do
@@ -17,6 +16,6 @@ defmodule ExChessWeb.Demos.DemoController do
   end
 
   def chessboard(conn, _params) do
-    render(conn, :chessboard, board: Fen.start_board())
+    render(conn, :chessboard, board: ExChess.Chess.start_board())
   end
 end

@@ -7,7 +7,13 @@ defmodule ExChess.Chess.Notations.FenTest do
   test "Empty board" do
     board = Board.new()
 
-    assert board == %Board{turn: :white, pieces: %{}}
+    assert board == %Board{
+             turn: :white,
+             status: :active,
+             captures: [],
+             history: [],
+             pieces: %{}
+           }
   end
 
   test "Starting position" do
@@ -17,6 +23,9 @@ defmodule ExChess.Chess.Notations.FenTest do
 
     assert board == %Board{
              turn: :white,
+             status: :active,
+             history: [],
+             captures: [],
              pieces: %{
                :a1 => %Piece{color: :white, role: :rook},
                :b1 => %Piece{color: :white, role: :knight},
@@ -61,6 +70,9 @@ defmodule ExChess.Chess.Notations.FenTest do
 
     assert board == %Board{
              turn: :black,
+             status: :active,
+             captures: [],
+             history: [],
              pieces: %{
                a1: %Piece{color: :white, role: :rook},
                a2: %Piece{color: :white, role: :pawn},

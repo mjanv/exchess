@@ -6,6 +6,7 @@ defmodule ExChess.Games.GameRecord do
   import Ecto.Changeset
   import Ecto.Query, warn: false
 
+  alias ExChess.Chess.Game
   alias ExChess.Repo
 
   schema "games" do
@@ -33,15 +34,25 @@ defmodule ExChess.Games.GameRecord do
     |> Repo.insert()
   end
 
+  def update_game(%__MODULE__{} = record, %Game{} = game) do
+    record
+    |> changeset(
+      %{}
+      |> parse_status(game)
+    )
+    |> Repo.update()
+  end
+
   def update_game(%__MODULE__{} = game, attrs) do
     game
     |> changeset(attrs)
     |> Repo.update()
   end
 
-  def change_game(%__MODULE__{} = game, attrs \\ %{}) do
-    changeset(game, attrs)
-  end
+  defp parse_status(attrs, %{status: nil, board: board}), do: Map.put(attrs, :result, board.turn)
+  defp parse_status(attrs, %{status: {:win, color}}), do: Map.put(attrs, :result, color)
+  defp parse_status(attrs, _), do: attrs
 
+  def change_game(%__MODULE__{} = game, attrs \\ %{}), do: changeset(game, attrs)
   def delete_game(%__MODULE__{} = game), do: Repo.delete(game)
 end
